@@ -3669,6 +3669,7 @@
     const BOARD_TITLE_KEY = 'malones-mind-board-title';
     const START_DEST_KEY = 'malones-mind-start-destination';
     const AUTH_REDIRECT_STATE_KEY = 'malones-mind-auth-redirect-pending';
+    const AUTH_FORCE_POPUP_KEY = 'malones-mind-auth-force-popup';
     const FIREBASE_CONFIG = {
       apiKey: 'AIzaSyBOFwZ_hJbp-b2p1z-wHoCSEXqzjYNRBpE',
       authDomain: 'creartiveminds-b2b93.firebaseapp.com',
@@ -3836,6 +3837,28 @@
       return window.location?.hostname || 'this site';
     }
 
+    function setAuthForcePopupNextAttempt(isForced) {
+      authForcePopupNextAttempt = !!isForced;
+      try {
+        if (isForced) {
+          sessionStorage.setItem(AUTH_FORCE_POPUP_KEY, '1');
+        } else {
+          sessionStorage.removeItem(AUTH_FORCE_POPUP_KEY);
+        }
+      } catch (e) {
+        console.warn('Could not update auth popup fallback state:', e);
+      }
+    }
+
+    function getAuthForcePopupNextAttempt() {
+      try {
+        return sessionStorage.getItem(AUTH_FORCE_POPUP_KEY) === '1';
+      } catch (e) {
+        console.warn('Could not read auth popup fallback state:', e);
+        return false;
+      }
+    }
+
     function waitForAuthSession(ms = 2800) {
       return new Promise((resolve) => {
         const start = Date.now();
@@ -3966,6 +3989,8 @@
       const signInBtn = document.getElementById('googleSignInBtn');
       const signOutBtn = document.getElementById('googleSignOutBtn');
 
+      authForcePopupNextAttempt = getAuthForcePopupNextAttempt();
+
       if (!window.firebase || !hasFirebaseConfig()) {
         updateAuthControls();
         return;
@@ -4000,21 +4025,26 @@
       cloudSyncState.auth.getRedirectResult()
         .then(async (result) => {
           if (result?.user) {
-            authForcePopupNextAttempt = false;
+            setAuthForcePopupNextAttempt(false);
             setStartMenuOpen(false);
             navigateToDestination(loadStartDestination() || 'feed', false);
           } else if (hasAuthRedirectPending()) {
             const hasSession = await waitForAuthSession();
             if (hasSession || cloudSyncState.auth.currentUser) {
-              authForcePopupNextAttempt = false;
+              setAuthForcePopupNextAttempt(false);
               setStartMenuOpen(false);
               navigateToDestination(loadStartDestination() || 'feed', false);
               return;
             }
 
-            authForcePopupNextAttempt = true;
+            setAuthForcePopupNextAttempt(true);
             const host = getCurrentHostLabel();
-            setAuthStatus(`Google redirect returned, but no user session was created on ${host}. In iPhone Settings > Safari, turn off Prevent Cross-Site Tracking, then tap Sign In again.`, true);
+            const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+            if (isLocalHost) {
+              setAuthStatus('Google redirect returned, but no user session was created on localhost. On phone, use your GitHub Pages URL instead of localhost, then tap Sign In again.', true);
+            } else {
+              setAuthStatus(`Google redirect returned, but no user session was created on ${host}. In iPhone Settings > Safari, turn off Prevent Cross-Site Tracking, then tap Sign In again.`, true);
+            }
           }
         })
         .catch((e) => {
@@ -4045,7 +4075,7 @@
             return;
           }
 
-          authForcePopupNextAttempt = false;
+          setAuthForcePopupNextAttempt(false);
           await cloudSyncState.auth.signInWithPopup(provider);
         } catch (e) {
           console.warn('Sign-in failed:', e);
