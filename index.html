@@ -1046,6 +1046,21 @@
       margin-top: 12px;
     }
 
+    .shot-board.scroll-into-view {
+      animation: shotBoardReveal 320ms ease-out both;
+    }
+
+    @keyframes shotBoardReveal {
+      from {
+        opacity: 0.2;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .shot-category-card {
       background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.018));
       border: 1px solid var(--border);
@@ -1058,6 +1073,18 @@
       box-shadow: 0 8px 22px rgba(0,0,0,0.18);
       cursor: pointer;
       transform: translateY(8px);
+      animation: shotCardEnter 260ms ease-out both;
+    }
+
+    @keyframes shotCardEnter {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(8px);
+      }
     }
 
     .shot-category-header {
@@ -5815,6 +5842,14 @@
 
       if (render) {
         renderShotBoard();
+        requestAnimationFrame(() => {
+          const board = document.getElementById('shotBoard');
+          if (!board) return;
+          board.classList.remove('scroll-into-view');
+          void board.offsetWidth;
+          board.classList.add('scroll-into-view');
+          board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       }
     }
 
@@ -6035,6 +6070,14 @@
 
       saveShotCategories();
       renderShotBoard();
+      requestAnimationFrame(() => {
+        const board = document.getElementById('shotBoard');
+        if (!board) return;
+        board.classList.remove('scroll-into-view');
+        void board.offsetWidth;
+        board.classList.add('scroll-into-view');
+        board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
       openShotCategory(categoryName);
     }
 
