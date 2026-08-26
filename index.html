@@ -982,12 +982,15 @@
     .shot-controls {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
       padding: 18px;
       border-bottom: 1px solid var(--border);
     }
 
-    .shot-controls input {
+    .shot-controls input,
+    .shot-controls select {
       flex: 1;
+      min-width: 200px;
       background: #101418;
       border: 1px solid var(--border-strong);
       border-radius: 10px;
@@ -997,9 +1000,22 @@
       padding: 10px 12px;
     }
 
-    .shot-controls input:focus {
+    .shot-controls input:focus,
+    .shot-controls select:focus {
       outline: none;
       border-color: var(--ink-dim);
+    }
+
+    .shot-controls select {
+      flex: 0 1 260px;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, var(--ink-dim) 50%), linear-gradient(135deg, var(--ink-dim) 50%, transparent 50%);
+      background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 34px;
     }
 
     .shot-controls button,
@@ -1719,6 +1735,86 @@
     }
 
     .script-delete-modal-delete {
+      background: linear-gradient(180deg, #ff6f6f 0%, #d94b4b 100%);
+      color: #fff;
+      border-color: rgba(255, 114, 114, 0.4) !important;
+      box-shadow: 0 8px 20px rgba(217, 75, 75, 0.25);
+    }
+
+    body.shot-delete-modal-open {
+      overflow: hidden;
+    }
+
+    .shot-delete-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 224;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(11, 13, 16, 0.74);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .shot-delete-modal-overlay.open {
+      display: flex;
+    }
+
+    .shot-delete-modal-card {
+      width: min(520px, 92vw);
+      overflow: hidden;
+      border: 1px solid rgba(242, 107, 107, 0.35);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #1d1214 0%, #11161b 100%);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.44);
+    }
+
+    .shot-delete-modal-stripe {
+      height: 12px;
+      background: linear-gradient(90deg, #f26b6b 0%, #d94f4f 55%, #b83c3c 100%);
+    }
+
+    .shot-delete-modal-title {
+      padding: 18px 20px 8px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.5px;
+      color: #fff6f6;
+    }
+
+    .shot-delete-modal-body {
+      padding: 0 20px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .shot-delete-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 20px 20px;
+    }
+
+    .shot-delete-modal-actions button {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .shot-delete-modal-cancel {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink-dim);
+    }
+
+    .shot-delete-modal-confirm {
       background: linear-gradient(180deg, #ff6f6f 0%, #d94b4b 100%);
       color: #fff;
       border-color: rgba(255, 114, 114, 0.4) !important;
@@ -3528,6 +3624,7 @@
         <div class="shot-status" id="shotStatus">Categories save locally</div>
       </div>
       <div class="shot-controls">
+        <select id="shotScriptSelect" aria-label="Select script for shot list"></select>
         <input type="text" id="shotCategoryNameInput" placeholder="Add a shot list category" maxlength="32" />
         <button type="button" id="shotCategoryAddBtn">Add category</button>
       </div>
@@ -3546,6 +3643,18 @@
           <button type="button" id="shotModalAddBtn">+ Add Shot</button>
         </div>
         <div id="shotModalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="shot-delete-modal-overlay" id="shotDeleteModal" aria-hidden="true">
+    <div class="shot-delete-modal-card" role="dialog" aria-modal="true" aria-labelledby="shotDeleteModalLabel" aria-describedby="shotDeleteModalDesc">
+      <div class="shot-delete-modal-stripe"></div>
+      <div class="shot-delete-modal-title" id="shotDeleteModalLabel">Delete Shot List?</div>
+      <div class="shot-delete-modal-body" id="shotDeleteModalDesc">Delete this shot list? This cannot be undone.</div>
+      <div class="shot-delete-modal-actions">
+        <button type="button" id="shotDeleteModalCancel" class="shot-delete-modal-cancel">Cancel</button>
+        <button type="button" id="shotDeleteModalConfirm" class="shot-delete-modal-confirm">Delete Shot List</button>
       </div>
     </div>
   </div>
@@ -3719,8 +3828,11 @@
     const DEFAULT_BUCKET_KEYS = new Set(['main', 'gaming', 'film']);
     const DEFAULT_SHOT_CATEGORY = 'Sequence';
     let BUCKETS = JSON.parse(JSON.stringify(DEFAULT_BUCKETS));
+    let SHOT_COLLECTIONS = {};
+    let ACTIVE_SHOT_SCRIPT_ID = '';
     let SHOT_CATEGORIES = {};
     let activeShotCategory = null;
+    let pendingShotDeleteCategory = null;
     let data = { main: [], gaming: [], film: [] };
     const CUSTOM_BUCKET_COLORS = ['#7dd3fc', '#93c5fd', '#c4b5fd', '#a7f3d0', '#f9a8d4', '#fcd34d'];
 
@@ -4508,12 +4620,20 @@
     }
 
     function loadScriptDocuments() {
+      let docsUpdated = false;
       try {
         const savedDocs = localStorage.getItem(SCRIPT_DOCUMENTS_KEY);
         if (savedDocs) {
           const parsed = JSON.parse(savedDocs);
           if (Array.isArray(parsed) && parsed.length > 0) {
             SCRIPT_DOCUMENTS = parsed;
+            SCRIPT_DOCUMENTS.forEach((doc) => {
+              if (!doc || typeof doc !== 'object') return;
+              if (!doc.id) {
+                doc.id = uid();
+                docsUpdated = true;
+              }
+            });
           }
         }
       } catch (e) {
@@ -4522,6 +4642,7 @@
 
       if (!Array.isArray(SCRIPT_DOCUMENTS) || SCRIPT_DOCUMENTS.length === 0) {
         SCRIPT_DOCUMENTS = [{ id: uid(), name: 'Script 1', pages: [''] }];
+        docsUpdated = true;
       }
 
       const savedActiveIndex = Number(localStorage.getItem(SCRIPT_ACTIVE_DOC_KEY));
@@ -4534,8 +4655,13 @@
       const activeDoc = SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC];
       if (!activeDoc || !Array.isArray(activeDoc.pages) || activeDoc.pages.length === 0) {
         activeDoc.pages = [''];
+        docsUpdated = true;
       }
       SCRIPT_PAGES = activeDoc.pages.slice();
+
+      if (docsUpdated) {
+        localStorage.setItem(SCRIPT_DOCUMENTS_KEY, JSON.stringify(SCRIPT_DOCUMENTS));
+      }
     }
 
     function saveScriptDocuments() {
@@ -4570,9 +4696,12 @@
           saveScriptDocuments();
           renderScriptDocumentList();
           renderScriptPages();
+          setActiveShotScript(SCRIPT_DOCUMENTS[index].id);
         });
         docList.appendChild(pill);
       });
+
+      syncShotScriptSelector();
     }
 
     function parseScriptCharacterEntries(value) {
@@ -4643,20 +4772,31 @@
       saveScriptDocuments();
       renderScriptDocumentList();
       renderScriptPages();
+      setActiveShotScript(newDoc.id);
       closeScriptCreateModal();
     }
 
     function deleteActiveScriptDocumentNow() {
+      const deletedDoc = SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC];
+      const deletedDocId = deletedDoc?.id || '';
       SCRIPT_DOCUMENTS.splice(ACTIVE_SCRIPT_DOC, 1);
       ACTIVE_SCRIPT_DOC = Math.max(0, Math.min(ACTIVE_SCRIPT_DOC, SCRIPT_DOCUMENTS.length - 1));
       if (!SCRIPT_DOCUMENTS.length) {
         SCRIPT_DOCUMENTS = [{ id: uid(), name: 'Script 1', pages: [''] }];
         ACTIVE_SCRIPT_DOC = 0;
       }
+
+      if (deletedDocId && SHOT_COLLECTIONS[deletedDocId]) {
+        delete SHOT_COLLECTIONS[deletedDocId];
+      }
+
       SCRIPT_PAGES = Array.isArray(SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC].pages) ? SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC].pages.slice() : [''];
       saveScriptDocuments();
+      setActiveShotScript(SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC]?.id, { render: false });
+      saveShotCategories();
       renderScriptDocumentList();
       renderScriptPages();
+      renderShotBoard();
     }
 
     function deleteActiveScriptDocument() {
@@ -5599,33 +5739,136 @@
       return div.innerHTML;
     }
 
-    function loadShotCategories() {
-      try {
-        const saved = localStorage.getItem(SHOT_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed && typeof parsed === 'object') {
-            SHOT_CATEGORIES = parsed;
-          }
-        }
-      } catch (e) {
-        console.warn('Could not load shot categories:', e);
+    function normalizeShotCategoriesMap(value) {
+      const clean = {};
+      if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        return clean;
       }
 
-      if (!SHOT_CATEGORIES || typeof SHOT_CATEGORIES !== 'object' || Array.isArray(SHOT_CATEGORIES)) {
-        SHOT_CATEGORIES = {};
+      Object.entries(value).forEach(([category, shots]) => {
+        const name = String(category || '').trim();
+        if (!name) return;
+        clean[name] = Array.isArray(shots) ? shots : [];
+      });
+
+      return clean;
+    }
+
+    function getActiveScriptDocument() {
+      return SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC] || null;
+    }
+
+    function getActiveShotScriptName() {
+      if (!ACTIVE_SHOT_SCRIPT_ID) return 'Script';
+      const doc = SCRIPT_DOCUMENTS.find((item) => item.id === ACTIVE_SHOT_SCRIPT_ID);
+      return doc?.name || 'Script';
+    }
+
+    function syncShotScriptSelector() {
+      const select = document.getElementById('shotScriptSelect');
+      if (!select) return;
+
+      const options = SCRIPT_DOCUMENTS.map((doc, index) => {
+        const docName = String(doc?.name || `Script ${index + 1}`).trim() || `Script ${index + 1}`;
+        return `<option value="${escapeHtml(doc.id || '')}">${escapeHtml(docName)}</option>`;
+      }).join('');
+
+      select.innerHTML = options;
+      if (!ACTIVE_SHOT_SCRIPT_ID && SCRIPT_DOCUMENTS.length > 0) {
+        ACTIVE_SHOT_SCRIPT_ID = SCRIPT_DOCUMENTS[0].id;
       }
 
+      select.value = ACTIVE_SHOT_SCRIPT_ID;
+    }
+
+    function ensureShotCategorySeed() {
       const firstCategory = Object.keys(SHOT_CATEGORIES)[0] || DEFAULT_SHOT_CATEGORY;
       if (!SHOT_CATEGORIES[firstCategory]) {
         SHOT_CATEGORIES[firstCategory] = [];
       }
     }
 
-    function saveShotCategories() {
-      localStorage.setItem(SHOT_KEY, JSON.stringify(SHOT_CATEGORIES));
+    function setActiveShotScript(scriptId, options = {}) {
+      const { render = true, seedDefault = true } = options;
+      const fallbackId = getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || '';
+      const nextId = scriptId || fallbackId;
+      if (!nextId) {
+        ACTIVE_SHOT_SCRIPT_ID = '';
+        SHOT_CATEGORIES = {};
+        if (render) renderShotBoard();
+        return;
+      }
+
+      const didChange = ACTIVE_SHOT_SCRIPT_ID && ACTIVE_SHOT_SCRIPT_ID !== nextId;
+      ACTIVE_SHOT_SCRIPT_ID = nextId;
+      if (!SHOT_COLLECTIONS[ACTIVE_SHOT_SCRIPT_ID]) {
+        SHOT_COLLECTIONS[ACTIVE_SHOT_SCRIPT_ID] = {};
+      }
+
+      SHOT_CATEGORIES = SHOT_COLLECTIONS[ACTIVE_SHOT_SCRIPT_ID];
+      if (seedDefault) {
+        ensureShotCategorySeed();
+      }
+
+      if (didChange && activeShotCategory) {
+        closeShotCategory();
+      }
+
+      syncShotScriptSelector();
       if (shotStatus) {
-        shotStatus.textContent = 'Saved locally';
+        shotStatus.textContent = `Categories for ${getActiveShotScriptName()} save locally`;
+      }
+
+      if (render) {
+        renderShotBoard();
+      }
+    }
+
+    function loadShotCategories() {
+      SHOT_COLLECTIONS = {};
+      try {
+        const saved = localStorage.getItem(SHOT_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object' && parsed.__schema === 'script-scoped') {
+            const collections = parsed.collections;
+            if (collections && typeof collections === 'object') {
+              Object.entries(collections).forEach(([scriptId, categories]) => {
+                SHOT_COLLECTIONS[scriptId] = normalizeShotCategoriesMap(categories);
+              });
+            }
+
+            const preferredScriptId = String(parsed.activeScriptId || '').trim();
+            setActiveShotScript(preferredScriptId, { render: false, seedDefault: true });
+          } else if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            const activeDocId = getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || uid();
+            SHOT_COLLECTIONS[activeDocId] = normalizeShotCategoriesMap(parsed);
+            setActiveShotScript(activeDocId, { render: false, seedDefault: true });
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load shot categories:', e);
+      }
+
+      if (!ACTIVE_SHOT_SCRIPT_ID) {
+        setActiveShotScript(getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || '', { render: false, seedDefault: true });
+      }
+    }
+
+    function saveShotCategories() {
+      if (ACTIVE_SHOT_SCRIPT_ID) {
+        SHOT_COLLECTIONS[ACTIVE_SHOT_SCRIPT_ID] = SHOT_CATEGORIES;
+      }
+
+      const payload = {
+        __schema: 'script-scoped',
+        activeScriptId: ACTIVE_SHOT_SCRIPT_ID,
+        collections: SHOT_COLLECTIONS,
+      };
+
+      localStorage.setItem(SHOT_KEY, JSON.stringify(payload));
+      if (shotStatus) {
+        shotStatus.textContent = `Saved for ${getActiveShotScriptName()}`;
       }
       queueCloudSyncSave();
     }
@@ -5634,8 +5877,9 @@
       const board = document.getElementById('shotBoard');
       if (!board) return;
 
+      const activeScriptName = getActiveShotScriptName();
       if (Object.keys(SHOT_CATEGORIES).length === 0) {
-        board.innerHTML = '<div class="shot-empty">Create a category to start planning shots.</div>';
+        board.innerHTML = `<div class="shot-empty">Create a category to start planning shots for ${escapeHtml(activeScriptName)}.</div>`;
         return;
       }
 
@@ -5680,7 +5924,7 @@
         });
         card.querySelector('.shot-card-delete').addEventListener('click', (e) => {
           e.stopPropagation();
-          deleteShotCategory(category);
+          requestDeleteShotCategory(category);
         });
         board.appendChild(card);
       });
@@ -5783,14 +6027,48 @@
       openShotCategory(category);
     }
 
-    function deleteShotCategory(category) {
-      if (!window.confirm(`Delete the category “${category}”?`)) return;
+    function deleteShotCategoryNow(category) {
       delete SHOT_CATEGORIES[category];
       saveShotCategories();
       renderShotBoard();
       if (activeShotCategory === category) {
         closeShotCategory();
       }
+    }
+
+    function requestDeleteShotCategory(category) {
+      const modal = document.getElementById('shotDeleteModal');
+      const body = document.getElementById('shotDeleteModalDesc');
+      const confirmBtn = document.getElementById('shotDeleteModalConfirm');
+      if (!modal || !body || !confirmBtn) return;
+
+      pendingShotDeleteCategory = category;
+      body.textContent = `Delete “${category}” from ${getActiveShotScriptName()}? This cannot be undone.`;
+      confirmBtn.textContent = 'Delete Shot List';
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('shot-delete-modal-open');
+      requestAnimationFrame(() => document.getElementById('shotDeleteModalCancel')?.focus());
+    }
+
+    function closeShotDeleteModal() {
+      const modal = document.getElementById('shotDeleteModal');
+      if (!modal) return;
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('shot-delete-modal-open');
+      pendingShotDeleteCategory = null;
+    }
+
+    function confirmShotDeleteModal() {
+      if (!pendingShotDeleteCategory) {
+        closeShotDeleteModal();
+        return;
+      }
+
+      const category = pendingShotDeleteCategory;
+      closeShotDeleteModal();
+      deleteShotCategoryNow(category);
     }
 
     function loadData() {
@@ -6458,6 +6736,8 @@
     const boardTitleModalInput = document.getElementById('boardTitleModalInput');
     const scriptCreateModal = document.getElementById('scriptCreateModal');
     const scriptDeleteModal = document.getElementById('scriptDeleteModal');
+    const shotDeleteModal = document.getElementById('shotDeleteModal');
+    const shotScriptSelect = document.getElementById('shotScriptSelect');
 
     function closeScriptCreateModal() {
       if (!scriptCreateModal) return;
@@ -6549,6 +6829,11 @@
     scriptDeleteModal?.addEventListener('click', (e) => {
       if (e.target === scriptDeleteModal) closeScriptDeleteModal();
     });
+    document.getElementById('shotDeleteModalCancel')?.addEventListener('click', closeShotDeleteModal);
+    document.getElementById('shotDeleteModalConfirm')?.addEventListener('click', confirmShotDeleteModal);
+    shotDeleteModal?.addEventListener('click', (e) => {
+      if (e.target === shotDeleteModal) closeShotDeleteModal();
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && scriptCreateModal?.classList.contains('open')) {
         e.preventDefault();
@@ -6558,6 +6843,11 @@
       if (e.key === 'Escape' && scriptDeleteModal?.classList.contains('open')) {
         e.preventDefault();
         closeScriptDeleteModal();
+        return;
+      }
+      if (e.key === 'Escape' && shotDeleteModal?.classList.contains('open')) {
+        e.preventDefault();
+        closeShotDeleteModal();
       }
     });
 
@@ -6606,6 +6896,12 @@
         board.scrollTo({ left: board.scrollWidth, behavior: smoothBehavior });
         scheduleBoardFocusRefresh();
       });
+    });
+
+    shotScriptSelect?.addEventListener('change', (e) => {
+      const selectedScriptId = String(e.target.value || '').trim();
+      setActiveShotScript(selectedScriptId);
+      saveShotCategories();
     });
 
     document.getElementById('shotCategoryAddBtn').addEventListener('click', () => {
