@@ -5,11 +5,29 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build:win": "electron-packager . \"Creative's Mind\" --platform=win32 --arch=x64 --out=dist --overwrite --asar"
+    "build:win": "electron-builder --win portable"
   },
   "devDependencies": {
+    "electron-builder": "^26.0.12",
     "electron": "^38.1.0",
     "electron-packager": "^17.1.2",
     "png-to-ico": "^3.0.2"
+  },
+  "build": {
+    "appId": "com.creativesmind.app",
+    "productName": "Creative's Mind",
+    "artifactName": "Creatives-Mind-${version}-Portable.exe",
+    "asar": true,
+    "files": [
+      "index.html",
+      "main.js",
+      "site.webmanifest",
+      "app-icons/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "app-icons/creatives-mind-logo.ico"
+    }
   }
 }
