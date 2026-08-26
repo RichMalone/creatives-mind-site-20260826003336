@@ -2117,6 +2117,16 @@
       .app {
         display: block;
       }
+
+      body.mobile-capture-writing .capture-sidebar-head,
+      body.mobile-capture-writing .capture-feed {
+        display: none;
+      }
+
+      body.mobile-capture-writing .capture-form {
+        border-top: none;
+        padding-top: 10px;
+      }
     }
 
     .capture-sidebar-head {
@@ -6164,8 +6174,26 @@
       input.focus();
     }
 
-    document.getElementById('captureInput').addEventListener('input', updateCaptureState);
-    document.getElementById('captureInput').addEventListener('keydown', (e) => {
+    const captureInput = document.getElementById('captureInput');
+
+    function setMobileCaptureWritingState(isWriting) {
+      if (window.innerWidth > 900) {
+        document.body.classList.remove('mobile-capture-writing');
+        return;
+      }
+      document.body.classList.toggle('mobile-capture-writing', !!isWriting);
+    }
+
+    captureInput?.addEventListener('focus', () => {
+      setMobileCaptureWritingState(true);
+    });
+
+    captureInput?.addEventListener('blur', () => {
+      setMobileCaptureWritingState(false);
+    });
+
+    captureInput?.addEventListener('input', updateCaptureState);
+    captureInput?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         if (!document.getElementById('captureBtn').disabled) submitCapture();
@@ -6207,6 +6235,7 @@
         pinnedPanel.style.display = '';
         board.style.display = '';
         menuSheet.classList.remove('open');
+        document.body.classList.remove('mobile-capture-writing');
       } else {
         setMobileView('buckets');
       }
