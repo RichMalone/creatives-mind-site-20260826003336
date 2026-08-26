@@ -5390,10 +5390,26 @@
     }
 
     function handleScriptEditorKeydown(event) {
-      if (event.key !== 'Backspace') return;
-
       const editor = event.currentTarget;
       const line = getCurrentScriptLine(editor);
+
+      if (event.key === 'Enter') {
+        const range = getScriptSelectionRange(editor);
+        if (line && line !== editor && range?.collapsed && line.dataset.scriptAlign === 'center') {
+          event.preventDefault();
+          const nextLine = createScriptLineBlock('action');
+          nextLine.style.textAlign = 'left';
+          nextLine.dataset.scriptAlign = 'left';
+          line.after(nextLine);
+          placeCaretAtLineStart(nextLine);
+          syncScriptPageFromEditor(editor);
+          updateScriptFormatHighlights();
+          return;
+        }
+        return;
+      }
+
+      if (event.key !== 'Backspace') return;
       if (!line || !editor.contains(line)) return;
       if (line.classList.contains('script-line-action')) return;
       if (!isScriptCaretAtLineStart(editor, line)) return;
