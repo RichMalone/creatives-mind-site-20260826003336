@@ -3625,6 +3625,7 @@
       </div>
       <div class="shot-controls">
         <select id="shotScriptSelect" aria-label="Select script for shot list"></select>
+        <button type="button" id="shotCategoryCreateBtn">+ Add Shot List for This Script</button>
       </div>
       <div class="shot-board" id="shotBoard"></div>
     </div>
@@ -5866,7 +5867,7 @@
 
       const activeScriptName = getActiveShotScriptName();
       if (Object.keys(SHOT_CATEGORIES).length === 0) {
-        board.innerHTML = `<div class="shot-empty">No shot lists saved for ${escapeHtml(activeScriptName)} yet.</div>`;
+        board.innerHTML = `<div class="shot-empty">No shot lists saved for ${escapeHtml(activeScriptName)} yet. Use the button above to create the one linked to this script.</div>`;
         return;
       }
 
@@ -6012,6 +6013,23 @@
       saveShotCategories();
       renderShotBoard();
       openShotCategory(category);
+    }
+
+    function createLinkedShotListForActiveScript() {
+      const scriptDoc = getActiveScriptDocument();
+      if (!scriptDoc) return;
+
+      const baseName = String(scriptDoc.name || 'Script').trim() || 'Script';
+      const existingCategory = Object.keys(SHOT_CATEGORIES).find((category) => category === baseName) || '';
+      const categoryName = existingCategory || baseName;
+
+      if (!SHOT_CATEGORIES[categoryName]) {
+        SHOT_CATEGORIES[categoryName] = [];
+      }
+
+      saveShotCategories();
+      renderShotBoard();
+      openShotCategory(categoryName);
     }
 
     function deleteShotCategoryNow(category) {
@@ -6890,6 +6908,8 @@
       setActiveShotScript(selectedScriptId);
       saveShotCategories();
     });
+
+    document.getElementById('shotCategoryCreateBtn')?.addEventListener('click', createLinkedShotListForActiveScript);
 
     document.getElementById('shotModalAddBtn').addEventListener('click', () => {
       if (!activeShotCategory) return;
