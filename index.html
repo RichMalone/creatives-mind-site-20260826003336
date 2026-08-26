@@ -3836,6 +3836,23 @@
       return window.location?.hostname || 'this site';
     }
 
+    function waitForAuthSession(ms = 2800) {
+      return new Promise((resolve) => {
+        const start = Date.now();
+        const timer = setInterval(() => {
+          if (cloudSyncState.user) {
+            clearInterval(timer);
+            resolve(true);
+            return;
+          }
+          if (Date.now() - start >= ms) {
+            clearInterval(timer);
+            resolve(false);
+          }
+        }, 120);
+      });
+    }
+
     function getCloudDocRef() {
       if (!cloudSyncState.db || !cloudSyncState.user) return null;
       return cloudSyncState.db.collection('creative-mind-users').doc(cloudSyncState.user.uid);
@@ -3981,15 +3998,23 @@
       });
 
       cloudSyncState.auth.getRedirectResult()
-        .then((result) => {
+        .then(async (result) => {
           if (result?.user) {
             authForcePopupNextAttempt = false;
             setStartMenuOpen(false);
             navigateToDestination(loadStartDestination() || 'feed', false);
           } else if (hasAuthRedirectPending()) {
+            const hasSession = await waitForAuthSession();
+            if (hasSession || cloudSyncState.auth.currentUser) {
+              authForcePopupNextAttempt = false;
+              setStartMenuOpen(false);
+              navigateToDestination(loadStartDestination() || 'feed', false);
+              return;
+            }
+
             authForcePopupNextAttempt = true;
             const host = getCurrentHostLabel();
-            setAuthStatus(`Google redirect returned, but no user session was created on ${host}. Open this page in Safari or Chrome (not an in-app browser), allow cookies, then tap Sign In again.`, true);
+            setAuthStatus(`Google redirect returned, but no user session was created on ${host}. In iPhone Settings > Safari, turn off Prevent Cross-Site Tracking, then tap Sign In again.`, true);
           }
         })
         .catch((e) => {
