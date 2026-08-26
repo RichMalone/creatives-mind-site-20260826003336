@@ -3805,10 +3805,8 @@
       const host = (window.location && window.location.hostname) ? window.location.hostname : '';
       const isLocalHost = host === 'localhost' || host === '127.0.0.1';
 
-      // Safari localhost often closes popup without persisting session; use redirect there.
-      if (isLocalHost && isSafari) return true;
-      // Other localhost browsers work better with popup-first.
-      if (isLocalHost) return false;
+      // Localhost is frequently popup-restricted in embedded and mobile browsers.
+      if (isLocalHost) return true;
       return isIOS || isSafari || isStandalone;
     }
 
