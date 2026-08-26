@@ -3625,8 +3625,6 @@
       </div>
       <div class="shot-controls">
         <select id="shotScriptSelect" aria-label="Select script for shot list"></select>
-        <input type="text" id="shotCategoryNameInput" placeholder="Add a shot list category" maxlength="32" />
-        <button type="button" id="shotCategoryAddBtn">Add category</button>
       </div>
       <div class="shot-board" id="shotBoard"></div>
     </div>
@@ -3826,7 +3824,6 @@
     };
     let authForcePopupNextAttempt = false;
     const DEFAULT_BUCKET_KEYS = new Set(['main', 'gaming', 'film']);
-    const DEFAULT_SHOT_CATEGORY = 'Sequence';
     let BUCKETS = JSON.parse(JSON.stringify(DEFAULT_BUCKETS));
     let SHOT_COLLECTIONS = {};
     let ACTIVE_SHOT_SCRIPT_ID = '';
@@ -5781,15 +5778,8 @@
       select.value = ACTIVE_SHOT_SCRIPT_ID;
     }
 
-    function ensureShotCategorySeed() {
-      const firstCategory = Object.keys(SHOT_CATEGORIES)[0] || DEFAULT_SHOT_CATEGORY;
-      if (!SHOT_CATEGORIES[firstCategory]) {
-        SHOT_CATEGORIES[firstCategory] = [];
-      }
-    }
-
     function setActiveShotScript(scriptId, options = {}) {
-      const { render = true, seedDefault = true } = options;
+      const { render = true } = options;
       const fallbackId = getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || '';
       const nextId = scriptId || fallbackId;
       if (!nextId) {
@@ -5806,9 +5796,6 @@
       }
 
       SHOT_CATEGORIES = SHOT_COLLECTIONS[ACTIVE_SHOT_SCRIPT_ID];
-      if (seedDefault) {
-        ensureShotCategorySeed();
-      }
 
       if (didChange && activeShotCategory) {
         closeShotCategory();
@@ -5839,11 +5826,11 @@
             }
 
             const preferredScriptId = String(parsed.activeScriptId || '').trim();
-            setActiveShotScript(preferredScriptId, { render: false, seedDefault: true });
+            setActiveShotScript(preferredScriptId, { render: false });
           } else if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
             const activeDocId = getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || uid();
             SHOT_COLLECTIONS[activeDocId] = normalizeShotCategoriesMap(parsed);
-            setActiveShotScript(activeDocId, { render: false, seedDefault: true });
+            setActiveShotScript(activeDocId, { render: false });
           }
         }
       } catch (e) {
@@ -5851,7 +5838,7 @@
       }
 
       if (!ACTIVE_SHOT_SCRIPT_ID) {
-        setActiveShotScript(getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || '', { render: false, seedDefault: true });
+        setActiveShotScript(getActiveScriptDocument()?.id || SCRIPT_DOCUMENTS[0]?.id || '', { render: false });
       }
     }
 
@@ -5879,7 +5866,7 @@
 
       const activeScriptName = getActiveShotScriptName();
       if (Object.keys(SHOT_CATEGORIES).length === 0) {
-        board.innerHTML = `<div class="shot-empty">Create a category to start planning shots for ${escapeHtml(activeScriptName)}.</div>`;
+        board.innerHTML = `<div class="shot-empty">No shot lists saved for ${escapeHtml(activeScriptName)} yet.</div>`;
         return;
       }
 
@@ -6902,16 +6889,6 @@
       const selectedScriptId = String(e.target.value || '').trim();
       setActiveShotScript(selectedScriptId);
       saveShotCategories();
-    });
-
-    document.getElementById('shotCategoryAddBtn').addEventListener('click', () => {
-      const input = document.getElementById('shotCategoryNameInput');
-      const name = String(input.value || '').trim();
-      if (!name) return;
-      SHOT_CATEGORIES[name] = SHOT_CATEGORIES[name] || [];
-      input.value = '';
-      saveShotCategories();
-      renderShotBoard();
     });
 
     document.getElementById('shotModalAddBtn').addEventListener('click', () => {
