@@ -1,0 +1,23 @@
+﻿{
+  "name": "Creative's Mind",
+  "short_name": "CreativeMind",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#16161a",
+  "theme_color": "#16161a",
+  "icons": [
+    {
+      "src": "./app-icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./app-icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
