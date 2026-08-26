@@ -43,12 +43,43 @@
       --gaming-c-dim: rgba(189, 184, 167, 0.12);
       --film-c: #8f8b7e;
       --film-c-dim: rgba(143, 139, 126, 0.12);
+      --scrollbar-track: #0b0d10;
+      --scrollbar-thumb: #4b4a45;
+      --scrollbar-thumb-hover: #8f8b7e;
       --header-h: 58px;
       --left-rail-w: 300px;
       --right-rail-w: 300px;
     }
 
     * { box-sizing: border-box; }
+    html {
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar {
+      width: 11px;
+      height: 11px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border: 3px solid var(--scrollbar-track);
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+
+    ::-webkit-scrollbar-corner {
+      background: var(--scrollbar-track);
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -5236,15 +5267,15 @@
       if (!['left', 'center', 'right'].includes(alignment)) return;
 
       restoreScriptSelection(editor);
-      const line = getCurrentScriptLine(editor);
-      const target = line && line !== editor ? line : editor;
-      if (alignment === 'left') {
-        target.style.textAlign = '';
-        delete target.dataset.scriptAlign;
-      } else {
+      const range = getScriptSelectionRange(editor);
+      const lines = Array.from(editor.querySelectorAll('.script-line'))
+        .filter((line) => range && !range.collapsed ? range.intersectsNode(line) : line === getCurrentScriptLine(editor));
+      const targets = lines.length > 0 ? lines : [editor];
+
+      targets.forEach((target) => {
         target.style.textAlign = alignment;
         target.dataset.scriptAlign = alignment;
-      }
+      });
       syncScriptPageFromEditor(editor);
       updateScriptFormatHighlights();
     }
