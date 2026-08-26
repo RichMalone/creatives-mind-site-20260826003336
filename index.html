@@ -5762,6 +5762,12 @@
       return doc?.name || 'Script';
     }
 
+    function getSelectedShotScriptDocument() {
+      const select = document.getElementById('shotScriptSelect');
+      const selectedId = String(select?.value || ACTIVE_SHOT_SCRIPT_ID || '').trim();
+      return SCRIPT_DOCUMENTS.find((item) => item.id === selectedId) || getActiveScriptDocument() || null;
+    }
+
     function syncShotScriptSelector() {
       const select = document.getElementById('shotScriptSelect');
       if (!select) return;
@@ -6016,7 +6022,7 @@
     }
 
     function createLinkedShotListForActiveScript() {
-      const scriptDoc = getActiveScriptDocument();
+      const scriptDoc = getSelectedShotScriptDocument();
       if (!scriptDoc) return;
 
       const baseName = String(scriptDoc.name || 'Script').trim() || 'Script';
