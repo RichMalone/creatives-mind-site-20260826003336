@@ -67,10 +67,54 @@
       margin: 0;
     }
 
+    .site-header-menu-toggle {
+      margin-left: auto;
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.03);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .site-header-menu-toggle:hover {
+      border-color: var(--ink-dim);
+    }
+
+    .site-header-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: min(320px, calc(100vw - 24px));
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      background: rgba(11, 13, 16, 0.98);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.34);
+      z-index: 140;
+    }
+
+    .site-header-menu.open {
+      display: flex;
+    }
+
     .site-nav {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+    }
+
+    .site-header-menu .site-nav {
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
     }
 
     .site-nav a {
@@ -83,6 +127,11 @@
       padding: 6px 9px;
       border: 1px solid var(--border-strong);
       border-radius: 999px;
+    }
+
+    .site-header-menu .site-nav a {
+      width: 100%;
+      text-align: center;
     }
 
     .site-nav a:hover,
@@ -101,6 +150,15 @@
       position: relative;
     }
 
+    .site-header-menu .auth-controls {
+      margin-left: 0;
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
     .auth-controls button {
       border: 1px solid var(--border-strong);
       background: rgba(255,255,255,0.03);
@@ -112,6 +170,12 @@
       letter-spacing: 0.35px;
       cursor: pointer;
       text-transform: uppercase;
+    }
+
+    .site-header-menu .auth-controls > button,
+    .site-header-menu .auth-drawer-toggle {
+      width: 100%;
+      text-align: center;
     }
 
     .auth-controls button:hover {
@@ -171,11 +235,23 @@
       padding: 7px 9px;
     }
 
+    .site-header-menu .auth-drawer-menu {
+      position: static;
+      margin-top: 6px;
+      box-shadow: none;
+      border-radius: 10px;
+    }
+
     .auth-status {
       font-size: 11px;
       color: var(--ink-faint);
       min-width: 120px;
       text-align: right;
+    }
+
+    .site-header-menu .auth-status {
+      min-width: 0;
+      text-align: center;
     }
 
     .auth-status.error {
@@ -3234,21 +3310,24 @@
     <div class="site-header-left">
       <div class="site-header-title">Creative's Mind</div>
     </div>
-    <nav class="site-nav" aria-label="Page sections">
-      <a href="#feedPanel">Idea Feed</a>
-      <a href="#shotListsPage">Shot Lists</a>
-      <a href="#scriptPage">Scripts</a>
-    </nav>
-    <div class="auth-controls">
-      <button type="button" id="appFullscreenBtn">Full Screen</button>
-      <div class="auth-drawer" id="authDrawer">
-        <button type="button" class="auth-drawer-toggle" id="authDrawerToggle" aria-expanded="false" aria-controls="authDrawerMenu">Account</button>
-        <div class="auth-drawer-menu" id="authDrawerMenu">
-          <button type="button" id="googleSignInBtn">Sign In</button>
-          <button type="button" id="googleSignOutBtn" hidden>Sign Out</button>
+    <button type="button" class="site-header-menu-toggle" id="siteHeaderMenuToggle" aria-expanded="false" aria-controls="siteHeaderMenu" aria-label="Open top menu">☰ Menu</button>
+    <div class="site-header-menu" id="siteHeaderMenu">
+      <nav class="site-nav" aria-label="Page sections">
+        <a href="#feedPanel">Idea Feed</a>
+        <a href="#shotListsPage">Shot Lists</a>
+        <a href="#scriptPage">Scripts</a>
+      </nav>
+      <div class="auth-controls">
+        <button type="button" id="appFullscreenBtn">Full Screen</button>
+        <div class="auth-drawer" id="authDrawer">
+          <button type="button" class="auth-drawer-toggle" id="authDrawerToggle" aria-expanded="false" aria-controls="authDrawerMenu">Account</button>
+          <div class="auth-drawer-menu" id="authDrawerMenu">
+            <button type="button" id="googleSignInBtn">Sign In</button>
+            <button type="button" id="googleSignOutBtn" hidden>Sign Out</button>
+          </div>
         </div>
+        <div class="auth-status" id="authStatusText">Local only</div>
       </div>
-      <div class="auth-status" id="authStatusText">Local only</div>
     </div>
   </header>
 
@@ -4063,6 +4142,7 @@
     document.querySelectorAll('.site-nav a').forEach((link) => {
       link.addEventListener('click', (event) => {
         event.preventDefault();
+        closeSiteHeaderMenu();
         const href = link.getAttribute('href');
         if (href === '#shotListsPage') {
           navigateToDestination('shot', true);
@@ -4119,11 +4199,29 @@
         e.preventDefault();
         toggleAppFullscreen();
       }
+      if (e.key === 'Escape') {
+        closeSiteHeaderMenu();
+      }
     });
     updateAppFullscreenButton();
 
     const authDrawer = document.getElementById('authDrawer');
     const authDrawerToggle = document.getElementById('authDrawerToggle');
+    const siteHeaderMenu = document.getElementById('siteHeaderMenu');
+    const siteHeaderMenuToggle = document.getElementById('siteHeaderMenuToggle');
+
+    function closeSiteHeaderMenu() {
+      if (!siteHeaderMenu || !siteHeaderMenuToggle) return;
+      siteHeaderMenu.classList.remove('open');
+      siteHeaderMenuToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    siteHeaderMenuToggle?.addEventListener('click', () => {
+      if (!siteHeaderMenu || !siteHeaderMenuToggle) return;
+      const willOpen = !siteHeaderMenu.classList.contains('open');
+      siteHeaderMenu.classList.toggle('open', willOpen);
+      siteHeaderMenuToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    });
 
     authDrawerToggle?.addEventListener('click', () => {
       const willOpen = !authDrawer?.classList.contains('open');
@@ -4137,6 +4235,14 @@
       if (authDrawer.contains(event.target)) return;
       authDrawer.classList.remove('open');
       authDrawerToggle.setAttribute('aria-expanded', 'false');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!siteHeaderMenu || !siteHeaderMenuToggle) return;
+      if (!siteHeaderMenu.classList.contains('open')) return;
+      if (siteHeaderMenu.contains(event.target)) return;
+      if (siteHeaderMenuToggle.contains(event.target)) return;
+      closeSiteHeaderMenu();
     });
 
     const startMenuOverlay = document.getElementById('startMenuOverlay');
