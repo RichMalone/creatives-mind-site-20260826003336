@@ -3677,6 +3677,7 @@
     const START_DEST_KEY = 'malones-mind-start-destination';
     const AUTH_REDIRECT_STATE_KEY = 'malones-mind-auth-redirect-pending';
     const AUTH_FORCE_POPUP_KEY = 'malones-mind-auth-force-popup';
+    const LIVE_WEB_APP_URL = 'https://richmalone.github.io/creatives-mind-site-20260826003336/';
     const FIREBASE_CONFIG = {
       apiKey: 'AIzaSyBOFwZ_hJbp-b2p1z-wHoCSEXqzjYNRBpE',
       authDomain: 'creartiveminds-b2b93.firebaseapp.com',
@@ -3790,7 +3791,7 @@
         const host = window.location?.hostname || 'this host';
         return `This domain is not authorized in Firebase Auth settings. Add: ${host}`;
       }
-      if (code === 'auth/operation-not-supported-in-this-environment') return 'Use http://localhost or 127.0.0.1 (not file://) for Google sign-in.';
+      if (code === 'auth/operation-not-supported-in-this-environment') return 'Use GitHub Pages or http://localhost for Google sign-in (not file://).';
       if (code === 'auth/web-storage-unsupported') return 'Browser storage is blocked. Allow cookies/storage and try again.';
       if (code === 'auth/network-request-failed') return 'Network issue. Check connection and try again.';
       if (code === 'auth/invalid-api-key') return 'Invalid Firebase apiKey in app config.';
@@ -4064,7 +4065,12 @@
 
       signInBtn?.addEventListener('click', async () => {
         if (window.location.protocol === 'file:') {
-          setAuthStatus('Google sign-in is unavailable on file://. Open from Netlify or localhost.', true);
+          setAuthStatus('Google sign-in needs a web URL. Opening the GitHub Pages version now...', true);
+          try {
+            window.open(LIVE_WEB_APP_URL, '_blank', 'noopener,noreferrer');
+          } catch (e) {
+            console.warn('Could not open live URL automatically:', e);
+          }
           return;
         }
 
