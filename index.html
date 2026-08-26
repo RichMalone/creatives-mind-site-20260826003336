@@ -4721,12 +4721,12 @@
     }
 
     function saveScriptDocuments() {
-      localStorage.setItem(SCRIPT_DOCUMENTS_KEY, JSON.stringify(SCRIPT_DOCUMENTS));
-      localStorage.setItem(SCRIPT_ACTIVE_DOC_KEY, String(ACTIVE_SCRIPT_DOC));
       const activeDoc = SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC];
       if (activeDoc) {
         activeDoc.pages = SCRIPT_PAGES.slice();
       }
+      localStorage.setItem(SCRIPT_DOCUMENTS_KEY, JSON.stringify(SCRIPT_DOCUMENTS));
+      localStorage.setItem(SCRIPT_ACTIVE_DOC_KEY, String(ACTIVE_SCRIPT_DOC));
       localStorage.setItem(SCRIPT_PAGES_KEY, JSON.stringify(SCRIPT_PAGES));
       localStorage.setItem(SCRIPT_KEY, SCRIPT_PAGES.join('\n\n---PAGE---\n\n'));
       if (scriptStatus) {
@@ -5267,9 +5267,19 @@
       if (!['left', 'center', 'right'].includes(alignment)) return;
 
       restoreScriptSelection(editor);
+      if (!editor.querySelector('.script-line, :scope > div, :scope > p')) {
+        const line = createScriptLineBlock('action');
+        while (editor.firstChild) {
+          line.appendChild(editor.firstChild);
+        }
+        editor.appendChild(line);
+      }
       const range = getScriptSelectionRange(editor);
-      const lines = Array.from(editor.querySelectorAll('.script-line'))
-        .filter((line) => range && !range.collapsed ? range.intersectsNode(line) : line === getCurrentScriptLine(editor));
+      const currentLine = getCurrentScriptLine(editor);
+      const lines = range && !range.collapsed
+        ? Array.from(editor.querySelectorAll('.script-line, :scope > div, :scope > p'))
+          .filter((line) => range.intersectsNode(line))
+        : currentLine ? [currentLine] : [];
       const targets = lines.length > 0 ? lines : [editor];
 
       targets.forEach((target) => {
@@ -5319,14 +5329,26 @@
 
     function getCurrentScriptLine(editor) {
       const range = getScriptSelectionRange(editor);
-      if (!range) return editor.querySelector('.script-line');
+      if (!range) return editor.querySelector('.script-line, :scope > div, :scope > p');
 
       const { startContainer } = range;
       if (startContainer.nodeType === Node.ELEMENT_NODE) {
-        return startContainer.closest('.script-line') || (startContainer === editor ? null : null);
+        return startContainer.closest('.script-line')
+          || getDirectScriptBlock(editor, startContainer)
+          || editor.querySelector('.script-line, :scope > div, :scope > p');
       }
 
-      return startContainer.parentElement?.closest('.script-line') || editor.querySelector('.script-line');
+      return startContainer.parentElement?.closest('.script-line')
+        || getDirectScriptBlock(editor, startContainer.parentElement)
+        || editor.querySelector('.script-line, :scope > div, :scope > p');
+    }
+
+    function getDirectScriptBlock(editor, node) {
+      let current = node;
+      while (current && current.parentElement !== editor) {
+        current = current.parentElement;
+      }
+      return current && /^(DIV|P)$/.test(current.tagName) ? current : null;
     }
 
     function placeCaretAtLineStart(line) {
