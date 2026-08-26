@@ -3690,6 +3690,7 @@
       saveTimer: null,
       isApplyingRemote: false,
     };
+    let authForcePopupNextAttempt = false;
     const DEFAULT_BUCKET_KEYS = new Set(['main', 'gaming', 'film']);
     const DEFAULT_SHOT_CATEGORY = 'Sequence';
     let BUCKETS = JSON.parse(JSON.stringify(DEFAULT_BUCKETS));
@@ -3829,6 +3830,10 @@
         console.warn('Could not read auth redirect state:', e);
         return false;
       }
+    }
+
+    function getCurrentHostLabel() {
+      return window.location?.hostname || 'this site';
     }
 
     function getCloudDocRef() {
@@ -3978,10 +3983,13 @@
       cloudSyncState.auth.getRedirectResult()
         .then((result) => {
           if (result?.user) {
+            authForcePopupNextAttempt = false;
             setStartMenuOpen(false);
             navigateToDestination(loadStartDestination() || 'feed', false);
           } else if (hasAuthRedirectPending()) {
-            setAuthStatus('Google redirect returned, but no user session was created. Allow cookies/popups for localhost and try again.', true);
+            authForcePopupNextAttempt = true;
+            const host = getCurrentHostLabel();
+            setAuthStatus(`Google redirect returned, but no user session was created on ${host}. Open this page in Safari or Chrome (not an in-app browser), allow cookies, then tap Sign In again.`, true);
           }
         })
         .catch((e) => {
@@ -4006,12 +4014,13 @@
           provider.setCustomParameters({ prompt: 'select_account' });
           cloudSyncState.auth.useDeviceLanguage();
 
-          if (shouldUseRedirectSignIn()) {
+          if (!authForcePopupNextAttempt && shouldUseRedirectSignIn()) {
             setAuthRedirectPending(true);
             await cloudSyncState.auth.signInWithRedirect(provider);
             return;
           }
 
+          authForcePopupNextAttempt = false;
           await cloudSyncState.auth.signInWithPopup(provider);
         } catch (e) {
           console.warn('Sign-in failed:', e);
