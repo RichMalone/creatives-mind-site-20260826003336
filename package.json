@@ -1,0 +1,15 @@
+{
+  "name": "creatives-mind",
+  "version": "1.0.0",
+  "description": "Creative's Mind desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-packager . \"Creative's Mind\" --platform=win32 --arch=x64 --out=dist --overwrite --asar"
+  },
+  "devDependencies": {
+    "electron": "^38.1.0",
+    "electron-packager": "^17.1.2",
+    "png-to-ico": "^3.0.2"
+  }
+}
