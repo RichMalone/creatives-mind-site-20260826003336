@@ -6,89 +6,148 @@
   <title>Creative's Mind</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2316161a'/%3E%3Crect x='8' y='8' width='48' height='48' rx='8' fill='%23E8E5DA'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial, sans-serif' font-size='24' font-weight='700' fill='%2316161a'%3EMM%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bebas+Neue&family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0b0d10;
-      --bg-raised: #12161b;
-      --card: #161b21;
-      --ink: #f4f1ea;
-      --ink-dim: #a7a49a;
-      --ink-faint: #6f6a61;
-      --border: rgba(244, 241, 234, 0.08);
-      --border-strong: rgba(244, 241, 234, 0.16);
+      --bg: #0d0a08;
+      --bg-raised: #18120e;
+      --card: #201813;
+      --card-hover: #2a2019;
+      --ink: #f7f1e5;
+      --ink-dim: #caba9c;
+      --ink-faint: #877967;
 
-      --main-c: #f2eee3;
-      --main-c-dim: rgba(242, 238, 227, 0.12);
-      --gaming-c: #bdb8a7;
-      --gaming-c-dim: rgba(189, 184, 167, 0.12);
-      --film-c: #8f8b7e;
-      --film-c-dim: rgba(143, 139, 126, 0.12);
-      --header-h: 58px;
-      --left-rail-w: 300px;
-      --right-rail-w: 300px;
+      --gold: #d4af37;
+      --gold-light: #f5d77f;
+      --gold-dark: #a28122;
+      --gold-gradient: linear-gradient(135deg, #fff3dc 0%, #e2be6e 50%, #b8902d 100%);
+      --gold-button: linear-gradient(135deg, #e4c472 0%, #b8933b 100%);
+
+      --border: rgba(212, 175, 55, 0.16);
+      --border-strong: rgba(212, 175, 55, 0.32);
+      --border-gold: rgba(212, 175, 55, 0.6);
+
+      --main-c: #f5e6ca;
+      --main-c-dim: rgba(212, 175, 55, 0.12);
+      --gaming-c: #e5b97c;
+      --gaming-c-dim: rgba(229, 185, 124, 0.12);
+      --film-c: #d8a268;
+      --film-c-dim: rgba(216, 162, 104, 0.12);
+
+      --header-h: 62px;
+      --left-rail-w: 320px;
     }
 
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
-      background: var(--bg);
+      background: radial-gradient(circle at 50% 0%, #201712 0%, #0d0a08 85%), #0d0a08;
       color: var(--ink);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100%;
+    }
+
+    h1, h2, h3, .modal-title, .shot-modal-title, .script-title, .shot-title {
+      font-family: 'Playfair Display', Georgia, serif;
     }
 
     .site-header {
       position: sticky;
       top: 0;
-      z-index: 80;
+      z-index: 100;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 10px 16px;
-      background: rgba(11, 13, 16, 0.92);
-      backdrop-filter: blur(10px);
+      padding: 12px 24px;
+      background: rgba(15, 11, 8, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-strong);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
     .site-header-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .site-header-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px;
-      letter-spacing: 1px;
-      margin: 0;
+    .site-header-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.12), rgba(212, 175, 55, 0.04));
+      color: var(--gold-light);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .site-header-menu-toggle:hover {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.2);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.22);
+    }
+
+    .site-header-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 24px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: min(340px, calc(100vw - 32px));
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border-strong);
+      background: rgba(24, 18, 14, 0.98);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.7), 0 0 1px var(--gold);
+      z-index: 140;
+    }
+
+    .site-header-menu.open {
+      display: flex;
     }
 
     .site-nav {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
     }
 
-    .site-nav a {
+    .site-nav a,
+    .site-nav button {
       color: var(--ink-dim);
       text-decoration: none;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.4px;
       text-transform: uppercase;
-      padding: 6px 9px;
+      padding: 8px 10px;
       border: 1px solid var(--border-strong);
       border-radius: 999px;
+      background: rgba(255,255,255,0.02);
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
     }
 
     .site-nav a:hover,
-    .site-nav a.active {
+    .site-nav a.active,
+    .site-nav button:hover {
       color: var(--ink);
       border-color: var(--ink-faint);
+      background: rgba(255,255,255,0.06);
     }
 
     .auth-controls {
@@ -176,6 +235,7 @@
       color: var(--ink-faint);
       min-width: 120px;
       text-align: right;
+      margin-left: auto;
     }
 
     .auth-status.error {
@@ -2720,23 +2780,24 @@
 <body>
   <header class="site-header">
     <div class="site-header-left">
-      <div class="site-header-title">Creative's Mind</div>
-    </div>
-    <nav class="site-nav" aria-label="Page sections">
-      <a href="#feedPanel">Idea Feed</a>
-      <a href="#shotListsPage">Shot Lists</a>
-      <a href="#scriptPage">Scripts</a>
-    </nav>
-    <div class="auth-controls">
+      <button type="button" class="site-header-menu-toggle" id="siteHeaderMenuToggle" aria-expanded="false" aria-controls="siteHeaderMenu" aria-label="Open top menu">☰ Menu</button>
       <button type="button" id="appFullscreenBtn">Full Screen</button>
-      <div class="auth-drawer" id="authDrawer">
-        <button type="button" class="auth-drawer-toggle" id="authDrawerToggle" aria-expanded="false" aria-controls="authDrawerMenu">Account</button>
-        <div class="auth-drawer-menu" id="authDrawerMenu">
-          <button type="button" id="googleSignInBtn">Sign In</button>
-          <button type="button" id="googleSignOutBtn" hidden>Sign Out</button>
+    </div>
+    <div class="auth-status" id="authStatusText">Local only</div>
+    <div class="site-header-menu" id="siteHeaderMenu" aria-label="Main menu">
+      <nav class="site-nav" aria-label="Page sections">
+        <a href="#feedPanel">Idea Feed</a>
+        <a href="#shotListsPage">Shot Lists</a>
+        <a href="#scriptPage">Scripts</a>
+        <button type="button" id="pinnedDrawerToggle">Pinned & Goals</button>
+        <div class="auth-drawer" id="authDrawer">
+          <button type="button" class="auth-drawer-toggle" id="authDrawerToggle" aria-expanded="false" aria-controls="authDrawerMenu">Account</button>
+          <div class="auth-drawer-menu" id="authDrawerMenu">
+            <button type="button" id="googleSignInBtn">Sign In</button>
+            <button type="button" id="googleSignOutBtn" hidden>Sign Out</button>
+          </div>
         </div>
-      </div>
-      <div class="auth-status" id="authStatusText">Local only</div>
+      </nav>
     </div>
   </header>
 
@@ -2957,8 +3018,11 @@
 
   <aside class="pinned-sidebar" id="pinnedPanel">
     <div class="pinned-sidebar-head">
-      <h2>Pinned</h2>
-      <p>Ideas you've flagged to act on.</p>
+      <div>
+        <h2>Pinned</h2>
+        <p>Ideas you've flagged to act on.</p>
+      </div>
+      <button type="button" class="pinned-sidebar-close" id="pinnedPanelClose" aria-label="Close pinned drawer">&times;</button>
     </div>
     <div class="pinned-list" id="pinnedList"></div>
     <div class="goal-card">
@@ -3527,6 +3591,27 @@
 
     const authDrawer = document.getElementById('authDrawer');
     const authDrawerToggle = document.getElementById('authDrawerToggle');
+    const siteHeaderMenuToggle = document.getElementById('siteHeaderMenuToggle');
+    const siteHeaderMenu = document.getElementById('siteHeaderMenu');
+    const pinnedPanel = document.getElementById('pinnedPanel');
+    const pinnedDrawerToggle = document.getElementById('pinnedDrawerToggle');
+    const pinnedPanelClose = document.getElementById('pinnedPanelClose');
+
+    pinnedDrawerToggle?.addEventListener('click', () => {
+      pinnedPanel?.classList.toggle('drawer-open');
+      siteHeaderMenu?.classList.remove('open');
+      siteHeaderMenuToggle?.setAttribute('aria-expanded', 'false');
+    });
+
+    pinnedPanelClose?.addEventListener('click', () => {
+      pinnedPanel?.classList.remove('drawer-open');
+    });
+
+    siteHeaderMenuToggle?.addEventListener('click', () => {
+      const shouldOpen = !siteHeaderMenu?.classList.contains('open');
+      siteHeaderMenu?.classList.toggle('open', shouldOpen);
+      siteHeaderMenuToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    });
 
     authDrawerToggle?.addEventListener('click', () => {
       const willOpen = !authDrawer?.classList.contains('open');
@@ -3535,11 +3620,23 @@
     });
 
     document.addEventListener('click', (event) => {
+      if (siteHeaderMenu && siteHeaderMenuToggle && !siteHeaderMenu.contains(event.target) && !siteHeaderMenuToggle.contains(event.target)) {
+        siteHeaderMenu.classList.remove('open');
+        siteHeaderMenuToggle.setAttribute('aria-expanded', 'false');
+      }
+
       if (!authDrawer || !authDrawerToggle) return;
       if (!authDrawer.classList.contains('open')) return;
       if (authDrawer.contains(event.target)) return;
       authDrawer.classList.remove('open');
       authDrawerToggle.setAttribute('aria-expanded', 'false');
+    });
+
+    siteHeaderMenu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        siteHeaderMenu.classList.remove('open');
+        siteHeaderMenuToggle?.setAttribute('aria-expanded', 'false');
+      });
     });
 
     const startMenuOverlay = document.getElementById('startMenuOverlay');
