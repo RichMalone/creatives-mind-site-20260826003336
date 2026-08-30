@@ -1,0 +1,5269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative's Mind</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2316161a'/%3E%3Crect x='8' y='8' width='48' height='48' rx='8' fill='%23E8E5DA'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial, sans-serif' font-size='24' font-weight='700' fill='%2316161a'%3EMM%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --bg-raised: #12161b;
+      --card: #161b21;
+      --ink: #f4f1ea;
+      --ink-dim: #a7a49a;
+      --ink-faint: #6f6a61;
+      --border: rgba(244, 241, 234, 0.08);
+      --border-strong: rgba(244, 241, 234, 0.16);
+
+      --main-c: #f2eee3;
+      --main-c-dim: rgba(242, 238, 227, 0.12);
+      --gaming-c: #bdb8a7;
+      --gaming-c-dim: rgba(189, 184, 167, 0.12);
+      --film-c: #8f8b7e;
+      --film-c-dim: rgba(143, 139, 126, 0.12);
+      --header-h: 58px;
+      --left-rail-w: 300px;
+      --right-rail-w: 300px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      min-height: 100%;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 16px;
+      background: rgba(11, 13, 16, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .site-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .site-header-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .site-nav a {
+      color: var(--ink-dim);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      padding: 6px 9px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+    }
+
+    .site-nav a:hover,
+    .site-nav a.active {
+      color: var(--ink);
+      border-color: var(--ink-faint);
+    }
+
+    .auth-controls {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .auth-controls button {
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.03);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.35px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .auth-controls button:hover {
+      border-color: var(--ink-dim);
+    }
+
+    .auth-drawer {
+      position: relative;
+    }
+
+    .auth-drawer::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 10px;
+    }
+
+    .auth-drawer-toggle {
+      opacity: 0.62;
+      transition: opacity 0.15s ease;
+    }
+
+    .auth-drawer:hover .auth-drawer-toggle,
+    .auth-drawer:focus-within .auth-drawer-toggle,
+    .auth-drawer.open .auth-drawer-toggle {
+      opacity: 1;
+    }
+
+    .auth-drawer-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 118px;
+      padding: 8px;
+      border-radius: 12px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.34);
+      z-index: 95;
+    }
+
+    .auth-drawer:hover .auth-drawer-menu,
+    .auth-drawer:focus-within .auth-drawer-menu,
+    .auth-drawer.open .auth-drawer-menu {
+      display: flex;
+    }
+
+    .auth-drawer-menu button {
+      width: 100%;
+      text-align: left;
+      font-size: 10px;
+      padding: 7px 9px;
+    }
+
+    .auth-status {
+      font-size: 11px;
+      color: var(--ink-faint);
+      min-width: 120px;
+      text-align: right;
+    }
+
+    .auth-status.error {
+      color: #fca5a5;
+    }
+
+    .shot-page {
+      display: none;
+      max-width: 1080px;
+      margin: 44px auto 0;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      min-height: 420px;
+    }
+
+    body.shot-active .shot-page {
+      display: block;
+    }
+
+    body.script-active .script-page {
+      display: block;
+    }
+
+    body.shot-active .capture-sidebar,
+    body.shot-active .app,
+    body.shot-active .pinned-sidebar,
+    body.script-active .capture-sidebar,
+    body.script-active .app,
+    body.script-active .pinned-sidebar {
+      display: none !important;
+    }
+
+    .shot-shell {
+      background: linear-gradient(180deg, #12171c, #0d1014);
+      color: var(--ink);
+      border-radius: 16px;
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+      overflow: hidden;
+    }
+
+    .script-page {
+      display: none;
+      max-width: 1080px;
+      margin: 44px auto 0;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      min-height: 420px;
+    }
+
+    .script-shell {
+      background: linear-gradient(180deg, #ffffff, #f6f7f8);
+      color: #0f1720;
+      border-radius: 16px;
+      border: 1px solid rgba(12, 16, 20, 0.12);
+      box-shadow: 0 10px 34px rgba(12, 16, 20, 0.15);
+      overflow: hidden;
+    }
+
+    .script-toolbar,
+    .shot-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .script-title,
+    .shot-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #5f6670;
+    }
+
+    .script-status,
+    .shot-status {
+      font-size: 11px;
+      color: #7f8791;
+    }
+
+    .script-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(12, 16, 20, 0.09);
+      background: rgba(12, 16, 20, 0.02);
+    }
+
+    .script-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      padding: 20px 92px 20px 20px;
+      background: #e9ebee;
+      overflow: auto;
+    }
+
+    .script-fullscreen-rail {
+      position: fixed;
+      top: 50%;
+      right: 16px;
+      transform: translateY(-50%);
+      z-index: 130;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 140px;
+    }
+
+    .script-fullscreen-rail button {
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      background: #ffffff;
+      color: #0f1720;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(12, 16, 20, 0.12);
+    }
+
+    .script-fullscreen-rail button:hover {
+      border-color: #5f6670;
+      transform: translateX(-2px);
+    }
+
+    .script-fullscreen .script-fullscreen-rail {
+      display: flex;
+    }
+
+    .script-doc-manager {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .script-doc-manager input {
+      flex: 1;
+      min-width: 180px;
+      background: #ffffff;
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      border-radius: 10px;
+      color: #0f1720;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+
+    .script-doc-manager input:focus {
+      outline: none;
+      border-color: #5f6670;
+    }
+
+    .script-doc-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .script-doc-chip {
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      background: #ffffff;
+      color: #0f1720;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .script-doc-chip.active {
+      background: #0f1720;
+      color: #ffffff;
+    }
+
+    .script-doc-chip.delete {
+      color: #7f1d1d;
+    }
+
+    .script-paper-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 18px;
+      background: #eef0f2;
+    }
+
+    .script-paper {
+      width: 210mm;
+      max-width: 100%;
+      min-height: 297mm;
+      background: #ffffff;
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      border-radius: 4px;
+      box-shadow: 0 8px 24px rgba(12, 16, 20, 0.12);
+      padding: 18px;
+      margin: 0 auto;
+    }
+
+    .script-paper .script-editor {
+      width: 100%;
+      min-height: calc(297mm - 44px);
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #0f1720;
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 12pt;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .script-line {
+      min-height: 1.5em;
+      width: 100%;
+    }
+
+    .script-line-scene {
+      font-weight: 700;
+      letter-spacing: 0.25px;
+      text-transform: uppercase;
+      margin-top: 0.5em;
+    }
+
+    .script-line-action {
+      max-width: 100%;
+      margin: 0.2em 0;
+    }
+
+    .script-line-character {
+      width: min(46%, 300px);
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 0.45em;
+    }
+
+    .script-line-dialogue {
+      width: min(62%, 420px);
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 0.2em;
+    }
+
+    .script-line-parenthetical {
+      width: min(52%, 360px);
+      margin-left: auto;
+      margin-right: auto;
+      color: #3a4654;
+      font-style: italic;
+    }
+
+    .script-scene-heading {
+      display: inline-block;
+      padding: 1px 2px;
+      border-radius: 4px;
+    }
+
+    .script-scene-heading:hover {
+      background: rgba(15, 23, 32, 0.06);
+    }
+
+    .script-scene-field {
+      border-bottom: 1px dashed rgba(15, 23, 32, 0.35);
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+
+    .script-paper .script-editor::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .script-paper .script-editor::-webkit-scrollbar-thumb {
+      background: rgba(12, 16, 20, 0.14);
+      border-radius: 999px;
+    }
+
+    .script-tools button {
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      background: #ffffff;
+      color: #0f1720;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+      letter-spacing: 0.35px;
+      text-transform: uppercase;
+    }
+
+    .script-tools button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(12, 16, 20, 0.1);
+    }
+
+    .script-tools button.is-active {
+      background: #0f1720;
+      color: #ffffff;
+      border-color: #0f1720;
+      box-shadow: 0 6px 16px rgba(12, 16, 20, 0.22);
+    }
+
+    .script-format-select {
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      background: #ffffff;
+      color: #0f1720;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .script-character-wrap {
+      position: relative;
+    }
+
+    .script-character-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      min-width: 240px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      background: #ffffff;
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      border-radius: 12px;
+      box-shadow: 0 10px 22px rgba(12, 16, 20, 0.16);
+      z-index: 10;
+    }
+
+    .script-character-wrap:hover .script-character-menu,
+    .script-character-wrap:focus-within .script-character-menu {
+      display: flex;
+    }
+
+    .script-character-menu-head {
+      display: flex;
+      gap: 8px;
+    }
+
+    .script-character-menu input {
+      flex: 1;
+      background: #f8f9fb;
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      border-radius: 8px;
+      font-size: 12px;
+      padding: 8px 10px;
+      color: #0f1720;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .script-character-menu input:focus {
+      outline: none;
+      border-color: #5f6670;
+    }
+
+    .script-character-menu-add {
+      background: #0f1720;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+
+    .script-character-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .script-character-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid rgba(12, 16, 20, 0.08);
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: #f9fafb;
+      font-size: 12px;
+    }
+
+    .script-character-item button {
+      padding: 4px 7px;
+      font-size: 10px;
+      background: transparent;
+      border: 1px solid rgba(12, 16, 20, 0.14);
+      border-radius: 6px;
+      color: #5f6670;
+    }
+
+    .script-character-empty {
+      font-size: 11px;
+      color: #7f8791;
+      padding: 2px 0;
+    }
+
+    .script-tools button:hover {
+      border-color: #5f6670;
+    }
+
+    .script-editor,
+    .shot-editor {
+      min-height: 520px;
+      width: 100%;
+      resize: vertical;
+      border: none;
+      padding: 24px 28px 40px;
+      font-size: 18px;
+      line-height: 1.8;
+      background: transparent;
+      color: #0f1720;
+      font-family: 'Courier New', monospace;
+      outline: none;
+    }
+
+    .script-editor::placeholder,
+    .shot-editor::placeholder {
+      color: #8a9098;
+    }
+
+    .shot-controls {
+      display: flex;
+      gap: 10px;
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .shot-controls input {
+      flex: 1;
+      background: #101418;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+
+    .shot-controls input:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .shot-controls button,
+    .shot-open-btn,
+    .shot-add-btn,
+    .shot-card-delete,
+    .shot-entry-delete {
+      border: none;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .shot-controls button {
+      background: linear-gradient(180deg, #f4f1ea, #dce8ff);
+      color: #0c0c0e;
+      padding: 10px 16px;
+      box-shadow: 0 0 18px rgba(104, 163, 255, 0.24);
+    }
+
+    .shot-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      padding: 18px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .shot-category-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.018));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 220px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+      cursor: pointer;
+      transform: translateY(8px);
+    }
+
+    .shot-category-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .shot-category-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    .shot-category-count {
+      margin-top: 4px;
+      color: var(--ink-faint);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .shot-card-delete,
+    .shot-entry-delete {
+      background: transparent;
+      color: var(--ink-faint);
+      border: 1px solid var(--border-strong);
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+
+    .shot-card-delete:hover,
+    .shot-entry-delete:hover {
+      color: var(--ink);
+      border-color: var(--ink-dim);
+    }
+
+    .shot-category-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      min-height: 58px;
+    }
+
+    .shot-preview-pill {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border-strong);
+      color: var(--ink-dim);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.45px;
+    }
+
+    .shot-preview-empty,
+    .shot-empty {
+      color: var(--ink-faint);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .shot-category-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .shot-open-btn,
+    .shot-add-btn {
+      padding: 9px 12px;
+      background: rgba(255,255,255,0.06);
+      color: var(--ink);
+      border: 1px solid var(--border-strong);
+      font-size: 12px;
+    }
+
+    .shot-open-btn:hover,
+    .shot-add-btn:hover {
+      border-color: var(--ink-dim);
+    }
+
+    .shot-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 12, 0.68);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 72px 20px 160px;
+      overflow-y: auto;
+      z-index: 60;
+    }
+
+    .shot-overlay.open {
+      display: flex;
+    }
+
+    .shot-modal {
+      width: 100%;
+      max-width: 760px;
+      background: #12171c;
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 16px 42px rgba(0,0,0,0.32);
+    }
+
+    .shot-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 0;
+      gap: 10px;
+    }
+
+    .shot-modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    .shot-modal-close {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .shot-modal-close:hover {
+      color: var(--ink);
+    }
+
+    .shot-modal-body {
+      padding: 16px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .shot-modal-add {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .shot-modal-add button {
+      background: linear-gradient(180deg, #f4f1ea, #dce8ff);
+      color: #0c0c0e;
+      padding: 9px 14px;
+      font-size: 12px;
+      box-shadow: 0 0 16px rgba(104, 163, 255, 0.2);
+    }
+
+    .shot-entry {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .shot-entry-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .shot-entry-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.55px;
+    }
+
+    .shot-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .shot-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .shot-field label {
+      font-size: 11px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .shot-field input,
+    .shot-field textarea {
+      width: 100%;
+      background: #0f1419;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      padding: 8px 10px;
+      resize: vertical;
+    }
+
+    .shot-field input:focus,
+    .shot-field textarea:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .shot-field textarea {
+      min-height: 64px;
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+      margin-left: calc(var(--left-rail-w) + 20px);
+      margin-right: calc(var(--right-rail-w) + 20px);
+    }
+
+    @media (max-width: 1500px) {
+      :root {
+        --left-rail-w: 250px;
+        --right-rail-w: 250px;
+      }
+
+      .bucket-card {
+        width: 292px;
+        min-width: 292px;
+        min-height: 304px;
+      }
+
+      h1 {
+        font-size: 60px;
+      }
+    }
+
+    @media (max-width: 1280px) {
+      .capture-sidebar,
+      .pinned-sidebar {
+        position: static;
+        width: 100%;
+        border: none;
+      }
+
+      .capture-sidebar {
+        border-bottom: 1px solid var(--border-strong);
+      }
+
+      .pinned-sidebar {
+        border-top: 1px solid var(--border-strong);
+      }
+
+      .app {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 1100px;
+        padding: 26px 16px 42px;
+      }
+
+      h1 {
+        font-size: 52px;
+      }
+
+      .bucket-card {
+        width: 272px;
+        min-width: 272px;
+      }
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--ink);
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .mobile-menu-sheet {
+      position: absolute;
+      left: 24px;
+      top: 68px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      padding: 10px;
+      min-width: 180px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.32);
+      z-index: 90;
+    }
+
+    .mobile-menu-sheet button {
+      background: transparent;
+      border: none;
+      color: var(--ink);
+      text-align: left;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .mobile-menu-sheet button:hover,
+    .mobile-menu-sheet button.active {
+      background: rgba(255,255,255,0.06);
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        margin-left: 0;
+        margin-right: 0;
+        padding-top: 20px;
+      }
+
+      .board-title-wrap {
+        align-items: center;
+      }
+
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
+
+      .mobile-menu-sheet {
+        display: none;
+      }
+
+      .mobile-menu-sheet.open {
+        display: flex;
+      }
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      text-align: center;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .board-title-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .board-title-edit {
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.03);
+      color: var(--ink-dim);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.35px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .board-title-edit:hover {
+      color: var(--ink);
+      border-color: var(--ink-faint);
+    }
+
+    body.board-title-modal-open {
+      overflow: hidden;
+    }
+
+    .board-title-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(11, 13, 16, 0.72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .board-title-modal-overlay.open {
+      display: flex;
+    }
+
+    .board-title-modal-card {
+      width: min(520px, 92vw);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #161b21, #101419);
+      box-shadow: 0 18px 44px rgba(0,0,0,0.36);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .board-title-modal-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+    }
+
+    .board-title-modal-input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 11px 12px;
+    }
+
+    .board-title-modal-input:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .board-title-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .board-title-modal-actions button {
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .board-title-modal-cancel {
+      background: rgba(255,255,255,0.02);
+      color: var(--ink-dim);
+    }
+
+    .board-title-modal-save {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: transparent !important;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      letter-spacing: 1.5px;
+      margin: 0;
+      line-height: 1;
+    }
+
+    header p {
+      color: var(--ink-dim);
+      font-size: 14px;
+      margin: 6px 0 0;
+    }
+
+    .idea-total {
+      text-align: right;
+      color: var(--ink-faint);
+      font-size: 13px;
+      margin-left: auto;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      min-width: 170px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+    }
+
+    .idea-total b {
+      color: var(--ink);
+      font-size: 26px;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .goal-mini {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .goal-mini-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--ink-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.45px;
+      margin-bottom: 6px;
+    }
+
+    .goal-mini-bar {
+      width: 100%;
+      height: 7px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .goal-mini-bar > div {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #6ec5ff, #3b82f6);
+      transition: width 0.2s ease;
+    }
+
+    .goal-mini-text {
+      margin-top: 5px;
+      font-size: 10px;
+      color: var(--ink-faint);
+    }
+
+    .bottom-summary {
+      margin-top: 24px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+    }
+
+    .bottom-summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .bottom-summary-label {
+      font-size: 12px;
+      color: var(--ink-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.55px;
+      font-weight: 700;
+    }
+
+    .bottom-summary-count {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    .board {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      padding: 0 12px 4px;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      justify-content: flex-start;
+      scroll-behavior: smooth;
+      cursor: grab;
+      position: relative;
+    }
+
+    .board::before,
+    .board::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 24px;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .board::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg), transparent);
+    }
+
+    .board::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--bg), transparent);
+    }
+
+    .board.is-overflowing::before,
+    .board.is-overflowing::after {
+      opacity: 1;
+    }
+
+    .board.is-grabbing {
+      cursor: grabbing;
+    }
+
+    .board::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      .board { display: grid; grid-template-columns: 1fr; overflow-x: visible; cursor: default; }
+      .board::before,
+      .board::after {
+        display: none;
+      }
+    }
+
+    .bucket-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.018));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+      width: 320px;
+      min-width: 320px;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.18);
+      position: relative;
+      z-index: 0;
+      animation: bucketEnter 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      animation-delay: calc(var(--bucket-idx, 0) * 34ms);
+    }
+
+    @keyframes bucketEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .board.focus-mode .bucket-card {
+      opacity: 0.42;
+    }
+
+    .board.focus-mode .bucket-card.is-focus,
+    .board.focus-mode .bucket-card:hover,
+    .board.focus-mode .bucket-card:focus-visible {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      body:not(.shot-active):not(.script-active) .board:hover .bucket-card {
+        filter: blur(1.7px) brightness(0.7) saturate(0.8);
+        transform: scale(0.985);
+      }
+
+      body:not(.shot-active):not(.script-active) .board:hover .bucket-card:hover,
+      body:not(.shot-active):not(.script-active) .board:hover .bucket-card:focus-visible {
+        filter: none;
+      }
+    }
+
+    .safari-bucket-fallback .board::before,
+    .safari-bucket-fallback .board::after {
+      display: none;
+    }
+
+    .safari-bucket-fallback .board {
+      scroll-snap-type: none;
+      cursor: default;
+      scroll-behavior: auto;
+    }
+
+    .safari-bucket-fallback .board.focus-mode .bucket-card,
+    .safari-bucket-fallback .board.focus-mode .bucket-card.is-focus,
+    .safari-bucket-fallback .board.focus-mode .bucket-card:hover,
+    .safari-bucket-fallback .board.focus-mode .bucket-card:focus-visible {
+      opacity: 1;
+      z-index: 0;
+    }
+
+    .safari-bucket-fallback:not(.shot-active):not(.script-active) .bucket-card:hover,
+    .safari-bucket-fallback:not(.shot-active):not(.script-active) .bucket-card:focus-visible {
+      transform: translateY(-7px) scale(1.03);
+      border-color: var(--border-strong);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.32), 0 0 18px rgba(242, 238, 227, 0.2);
+      filter: none;
+    }
+
+    .safari-bucket-fallback .bucket-card {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      animation: none;
+      transition: border-color 0.15s ease, opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .mac-bucket-mode .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      overflow: visible;
+      padding: 0;
+      cursor: default;
+      scroll-snap-type: none;
+      justify-content: stretch;
+    }
+
+    .mac-bucket-mode .board::before,
+    .mac-bucket-mode .board::after {
+      display: none;
+    }
+
+    .mac-bucket-mode .bucket-card {
+      width: 100%;
+      min-width: 0;
+      min-height: 134px;
+      border-radius: 14px;
+      animation: none;
+      transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+    }
+
+    .mac-bucket-mode .bucket-card:hover,
+    .mac-bucket-mode .bucket-card:focus-visible {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 20px 36px rgba(0,0,0,0.34), 0 0 18px rgba(242, 238, 227, 0.22);
+      border-color: var(--border-strong);
+      z-index: 2;
+      filter: none;
+    }
+
+    .mac-bucket-mode .bucket-body {
+      padding: 14px 14px 12px;
+      gap: 8px;
+    }
+
+    .mac-bucket-mode .bucket-title {
+      font-size: 21px;
+    }
+
+    .mac-bucket-mode .bucket-count,
+    .mac-bucket-mode .open-hint,
+    .mac-bucket-mode .preview-more,
+    .mac-bucket-mode .preview-empty,
+    .mac-bucket-mode .bucket-delete {
+      opacity: 0;
+      max-height: 0;
+      margin: 0;
+      overflow: hidden;
+      transition: opacity 0.18s ease, max-height 0.18s ease;
+    }
+
+    .mac-bucket-mode .bucket-preview {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease, opacity 0.2s ease;
+      gap: 6px;
+    }
+
+    .mac-bucket-mode .preview-item {
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+
+    .mac-bucket-mode .bucket-card:hover .bucket-preview,
+    .mac-bucket-mode .bucket-card:focus-visible .bucket-preview {
+      max-height: 136px;
+      opacity: 1;
+    }
+
+    .mac-bucket-mode .bucket-card:hover .bucket-count,
+    .mac-bucket-mode .bucket-card:focus-visible .bucket-count,
+    .mac-bucket-mode .bucket-card:hover .open-hint,
+    .mac-bucket-mode .bucket-card:focus-visible .open-hint,
+    .mac-bucket-mode .bucket-card:hover .preview-more,
+    .mac-bucket-mode .bucket-card:focus-visible .preview-more,
+    .mac-bucket-mode .bucket-card:hover .preview-empty,
+    .mac-bucket-mode .bucket-card:focus-visible .preview-empty,
+    .mac-bucket-mode .bucket-card:hover .bucket-delete,
+    .mac-bucket-mode .bucket-card:focus-visible .bucket-delete {
+      opacity: 1;
+      max-height: 24px;
+    }
+
+    .bucket-card:hover {
+      transform: translateY(-8px) scale(1.04);
+      border-color: var(--border-strong);
+      box-shadow: 0 20px 38px rgba(0,0,0,0.34), 0 0 20px rgba(242, 238, 227, 0.24);
+      filter: none;
+    }
+
+    .bucket-card:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .stripe {
+      height: 10px;
+      width: 100%;
+    }
+
+    .stripe.main {
+      background: repeating-linear-gradient(-45deg, var(--main-c), var(--main-c) 10px, #17171b 10px, #17171b 20px);
+    }
+
+    .stripe.gaming {
+      background: repeating-linear-gradient(-45deg, var(--gaming-c), var(--gaming-c) 10px, #17171b 10px, #17171b 20px);
+    }
+
+    .stripe.film {
+      background: repeating-linear-gradient(-45deg, var(--film-c), var(--film-c) 10px, #17171b 10px, #17171b 20px);
+    }
+
+    .bucket-body {
+      padding: 20px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .bucket-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 8px;
+    }
+
+    .bucket-delete {
+      background: none;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      color: var(--ink-faint);
+      font-size: 11px;
+      line-height: 1;
+      padding: 4px 7px;
+      cursor: pointer;
+    }
+
+    .bucket-delete:hover {
+      border-color: var(--film-c);
+      color: var(--film-c);
+    }
+
+    .bucket-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bucket-count {
+      font-size: 13px;
+      color: var(--ink-faint);
+      font-weight: 600;
+    }
+
+    .bucket-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .preview-item {
+      font-size: 14px;
+      color: var(--ink-dim);
+      padding: 8px 10px;
+      background: var(--card);
+      border-radius: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid var(--border);
+    }
+
+    .preview-empty {
+      color: var(--ink-faint);
+      font-size: 13px;
+      font-style: italic;
+      padding: 8px 2px;
+    }
+
+    .preview-more {
+      font-size: 12px;
+      color: var(--ink-faint);
+      padding: 2px 2px 0;
+    }
+
+    .open-hint {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--ink-faint);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .capture-sidebar {
+      position: fixed;
+      left: 0;
+      top: var(--header-h);
+      bottom: 0;
+      height: calc(100vh - var(--header-h));
+      width: var(--left-rail-w);
+      background: var(--bg-raised);
+      border-right: 1px solid var(--border-strong);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 900px) {
+      .capture-sidebar {
+        position: static;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      .capture-feed { max-height: 220px; }
+      .capture-sidebar,
+      .pinned-sidebar,
+      .app {
+        display: block;
+      }
+    }
+
+    .capture-sidebar-head {
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .capture-sidebar-head h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .capture-sidebar-head p {
+      font-size: 11px;
+      color: var(--ink-faint);
+      margin: 4px 0 0;
+    }
+
+    .capture-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feed-empty {
+      color: var(--ink-faint);
+      font-size: 12px;
+      font-style: italic;
+      padding: 4px 2px;
+    }
+
+    .feed-msg {
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .feed-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-right: 6px;
+      color: #0c0c0e;
+      vertical-align: 1px;
+    }
+
+    .feed-badge.main { background: var(--main-c); }
+    .feed-badge.gaming { background: var(--gaming-c); }
+    .feed-badge.film { background: var(--film-c); }
+
+    .feed-time {
+      font-size: 10px;
+      color: var(--ink-faint);
+      margin-left: 4px;
+    }
+
+    .capture-form {
+      border-top: 1px solid var(--border-strong);
+      padding: 12px 14px 16px;
+      flex-shrink: 0;
+    }
+
+    .capture-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .capture-row textarea {
+      resize: none;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 10px 12px;
+      line-height: 1.4;
+      min-height: 42px;
+      max-height: 120px;
+      width: 100%;
+    }
+
+    .capture-row textarea:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .capture-row button {
+      background: var(--ink);
+      color: var(--bg);
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .capture-row button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .capture-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 8px;
+      gap: 8px;
+    }
+
+    .tag-hint {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .tag-chip {
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      color: var(--ink-faint);
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      transition: all 0.12s ease;
+      cursor: pointer;
+      background: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+    }
+
+    .tag-chip:hover {
+      border-color: #5ca9e0;
+      color: #5ca9e0;
+      transform: scale(1.12);
+    }
+
+    .tag-chip:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    .tag-chip.lit.main { background: var(--main-c); color: #0c0c0e; border-color: var(--main-c); }
+    .tag-chip.lit.gaming { background: var(--gaming-c); color: #0c0c0e; border-color: var(--gaming-c); }
+    .tag-chip.lit.film { background: var(--film-c); color: #0c0c0e; border-color: var(--film-c); }
+
+    .capture-msg {
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+
+    body.mac-web-layout {
+      --left-rail-w: 220px;
+      --right-rail-w: 220px;
+    }
+
+    body.mac-web-layout .app {
+      max-width: 1320px;
+      margin-left: calc(var(--left-rail-w) + 16px);
+      margin-right: calc(var(--right-rail-w) + 16px);
+      padding: 28px 18px 46px;
+    }
+
+    body.mac-web-layout .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      overflow: visible;
+      padding: 0;
+      cursor: default;
+      scroll-snap-type: none;
+      justify-content: stretch;
+    }
+
+    body.mac-web-layout .board::before,
+    body.mac-web-layout .board::after {
+      display: none;
+    }
+
+    body.mac-web-layout .bucket-card {
+      width: 100%;
+      min-width: 0;
+      min-height: 74px;
+      border-radius: 14px;
+      border-color: rgba(244, 241, 234, 0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.035));
+      box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+    }
+
+    body.mac-web-layout .stripe {
+      display: none;
+    }
+
+    body.mac-web-layout .bucket-body {
+      padding: 12px 14px;
+      gap: 0;
+      justify-content: center;
+    }
+
+    body.mac-web-layout .bucket-head {
+      margin-bottom: 0;
+      align-items: center;
+    }
+
+    body.mac-web-layout .bucket-title {
+      font-size: 21px;
+      letter-spacing: 0.25px;
+      gap: 8px;
+    }
+
+    body.mac-web-layout .bucket-count,
+    body.mac-web-layout .bucket-preview,
+    body.mac-web-layout .open-hint,
+    body.mac-web-layout .bucket-delete {
+      display: none;
+    }
+
+    body.mac-web-layout .bucket-card:hover,
+    body.mac-web-layout .bucket-card:focus-visible {
+      transform: translateY(-7px) scale(1.03);
+    }
+
+    body.mac-web-layout .shot-page,
+    body.mac-web-layout .script-page {
+      max-width: min(1480px, calc(100vw - 30px));
+      margin-top: 22px;
+      padding: 14px;
+    }
+
+    body.mac-web-layout .script-paper-stack,
+    body.mac-web-layout .shot-board {
+      padding: 12px;
+    }
+
+    body.mac-web-layout .script-editor,
+    body.mac-web-layout .shot-editor {
+      font-size: 16px;
+    }
+
+    @media (max-width: 1500px) {
+      body.mac-web-layout {
+        --left-rail-w: 200px;
+        --right-rail-w: 200px;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      body.mac-web-layout .board {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 9px;
+      }
+
+      body.mac-web-layout .bucket-card {
+        min-height: 68px;
+      }
+
+      body.mac-web-layout .bucket-card:hover,
+      body.mac-web-layout .bucket-card:focus-visible {
+        transform: translateY(-3px) scale(1.01);
+      }
+    }
+
+    @media (max-width: 900px) {
+      body.mac-web-layout .board {
+        grid-template-columns: 1fr;
+      }
+
+      body.mac-web-layout .bucket-card,
+      body.mac-web-layout .bucket-card:hover,
+      body.mac-web-layout .bucket-card:focus-visible {
+        transform: none;
+      }
+    }
+
+    .capture-msg.error { color: var(--film-c); }
+
+    .bucket-add-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 0 0 16px;
+    }
+
+    .bucket-add-row input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+
+    #bucketEmojiInput {
+      display: none;
+    }
+
+    .bucket-emoji-picker {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .bucket-emoji-picker::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 10px;
+    }
+
+    .bucket-emoji-trigger {
+      width: 52px;
+      min-width: 52px;
+      height: 42px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      filter: saturate(0.88) brightness(0.82);
+      transition: filter 0.12s ease, border-color 0.12s ease;
+    }
+
+    .bucket-emoji-trigger:hover,
+    .bucket-emoji-trigger:focus-visible {
+      filter: saturate(0.95) brightness(0.92);
+      border-color: var(--ink-faint);
+    }
+
+    .bucket-emoji-palette {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 30;
+      display: none;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 204px;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-raised);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.28);
+    }
+
+    .bucket-emoji-picker:hover .bucket-emoji-palette,
+    .bucket-emoji-picker:focus-within .bucket-emoji-palette {
+      display: flex;
+    }
+
+    .bucket-emoji-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0;
+      transition: border-color 0.12s ease, transform 0.12s ease;
+    }
+
+    .bucket-emoji-btn:hover {
+      border-color: var(--ink-dim);
+      transform: translateY(-1px);
+    }
+
+    .bucket-emoji-btn.active {
+      border-color: var(--main-c);
+      box-shadow: 0 0 0 1px var(--main-c) inset;
+    }
+
+    .bucket-add-row input:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .bucket-add-row button {
+      background: linear-gradient(180deg, #f4f1ea, #dce8ff);
+      color: var(--bg);
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(104, 163, 255, 0.24);
+    }
+
+    .pinned-sidebar {
+      position: fixed;
+      right: 0;
+      top: var(--header-h);
+      bottom: 0;
+      height: calc(100vh - var(--header-h));
+      width: var(--right-rail-w);
+      background: var(--bg-raised);
+      border-left: 1px solid var(--border-strong);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 900px) {
+      .pinned-sidebar {
+        position: static;
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border-strong);
+      }
+      .pinned-list { max-height: 260px; }
+    }
+
+    .pinned-sidebar-head {
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .pinned-sidebar-head h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .pinned-sidebar-head p {
+      font-size: 11px;
+      color: var(--ink-faint);
+      margin: 4px 0 0;
+    }
+
+    .pinned-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .goal-card {
+      margin: 0 14px 14px;
+      padding: 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .goal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .goal-head span {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-dim);
+      font-weight: 700;
+    }
+
+    .goal-head strong {
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .goal-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .goal-label {
+      font-size: 11px;
+      color: var(--ink-faint);
+    }
+
+    .goal-input {
+      width: 84px;
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .goal-input:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .goal-progress {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .goal-progress > div {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #6ec5ff, #3b82f6);
+      transition: width 0.2s ease;
+    }
+
+    .goal-note {
+      font-size: 11px;
+      color: var(--ink-faint);
+      line-height: 1.4;
+    }
+
+    .pinned-empty {
+      color: var(--ink-faint);
+      font-size: 12px;
+      font-style: italic;
+      padding: 4px 2px;
+    }
+
+    .pinned-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.12s ease;
+    }
+
+    .pinned-item:hover { border-color: var(--border-strong); }
+
+    .pinned-item-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .pinned-item-text {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      word-break: break-word;
+      flex: 1;
+    }
+
+    .pinned-item-desc {
+      font-size: 12px;
+      color: var(--ink-dim);
+      line-height: 1.4;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+
+    .pinned-unpin {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0 0 0 4px;
+      flex-shrink: 0;
+    }
+
+    .pinned-unpin:hover { color: var(--film-c); }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 12, 0.6);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px 200px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--bg-raised);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 640px;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .modal-stripe { height: 10px; }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 22px 6px;
+    }
+
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 6px;
+    }
+
+    .modal-close:hover { color: var(--ink); }
+
+    .modal-add {
+      padding: 10px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tweet-composer {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      backdrop-filter: blur(4px);
+    }
+
+    .composer-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-add input,
+    .modal-add textarea {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 0;
+      width: 100%;
+      box-shadow: none;
+      caret-color: var(--ink);
+      -webkit-text-fill-color: var(--ink);
+    }
+
+    .modal-add input::placeholder,
+    .modal-add textarea::placeholder {
+      color: var(--ink-faint);
+      opacity: 1;
+    }
+
+    .modal-add input:-webkit-autofill,
+    .modal-add input:-webkit-autofill:hover,
+    .modal-add input:-webkit-autofill:focus,
+    .modal-add textarea:-webkit-autofill,
+    .modal-add textarea:-webkit-autofill:hover,
+    .modal-add textarea:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px transparent inset;
+      -webkit-text-fill-color: var(--ink) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .modal-add textarea {
+      resize: none;
+      min-height: 60px;
+      line-height: 1.4;
+    }
+
+    #modalInput {
+      min-height: 48px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .modal-add label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ink-faint);
+      font-weight: 600;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .modal-add input:focus,
+    .modal-add textarea:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .desc-toggle-wrap {
+      margin-top: -2px;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    button.desc-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: #7a7871;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 42px;
+      min-width: 42px;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    button.desc-toggle:hover {
+      color: var(--ink);
+      border-color: var(--ink-faint);
+    }
+
+    button.desc-toggle .chevron {
+      display: none;
+    }
+
+    .pin-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--ink-faint);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 8px 10px;
+      flex-shrink: 0;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .pin-toggle:hover { color: var(--ink); border-color: var(--ink-faint); }
+    .pin-toggle[aria-pressed="true"] {
+      color: var(--main-c);
+      border-color: var(--main-c);
+    }
+
+    .desc-toggle:hover { color: var(--ink); border-color: var(--ink-faint); }
+    .desc-toggle .chevron {
+      display: inline-block;
+      transition: transform 0.15s ease;
+      font-size: 10px;
+    }
+
+    .desc-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .desc-collapse { margin-top: 6px; }
+
+    .modal-add-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .modal-add button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      color: #0c0c0e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-list {
+      padding: 4px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .idea-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .idea-text {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.4;
+      word-break: break-word;
+      font-weight: 600;
+    }
+
+    .idea-description {
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.4;
+      word-break: break-word;
+      color: var(--ink-dim);
+      margin-top: 4px;
+      white-space: pre-wrap;
+    }
+
+    .idea-date {
+      font-size: 11px;
+      color: var(--ink-faint);
+      margin-top: 6px;
+    }
+
+    .idea-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .idea-edit,
+    .idea-pin,
+    .idea-del {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+
+    .idea-edit:hover { color: var(--ink); }
+    .idea-pin:hover { color: var(--ink); }
+    .idea-del:hover { color: var(--film-c); }
+    .idea-pin.pinned { color: var(--main-c); }
+
+    .idea-row-editing {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .edit-text-input,
+    .edit-desc-input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+    }
+
+    .edit-desc-toggle { margin: -2px 0 4px; }
+
+    .edit-desc-input {
+      resize: none;
+      min-height: 50px;
+      line-height: 1.4;
+    }
+
+    .edit-text-input:focus,
+    .edit-desc-input:focus {
+      outline: none;
+      border-color: var(--ink-dim);
+    }
+
+    .edit-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .edit-actions button {
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .edit-save { background: var(--ink); color: var(--bg); }
+    .edit-cancel { background: var(--card); color: var(--ink-dim); border: 1px solid var(--border-strong) !important; }
+
+    .modal-empty {
+      color: var(--ink-faint);
+      font-size: 13px;
+      font-style: italic;
+      padding: 10px 0 20px;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    body.start-menu-active {
+      overflow: hidden;
+    }
+
+    .start-menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.08), rgba(11,13,16,0.96) 54%), rgba(11,13,16,0.98);
+      backdrop-filter: blur(8px) brightness(0.52) saturate(0.9);
+      -webkit-backdrop-filter: blur(8px) brightness(0.52) saturate(0.9);
+      transition: background 220ms ease;
+    }
+
+    .start-menu-overlay.open {
+      display: flex;
+    }
+
+    .start-menu-overlay.preview-feed {
+      background: radial-gradient(circle at 50% 25%, rgba(245,245,245,0.12), rgba(11,13,16,0.94) 56%), rgba(11,13,16,0.98);
+    }
+
+    .start-menu-overlay.preview-shot {
+      background: radial-gradient(circle at 50% 25%, rgba(140,170,210,0.14), rgba(11,13,16,0.94) 56%), rgba(8,12,17,0.985);
+    }
+
+    .start-menu-overlay.preview-script {
+      background: radial-gradient(circle at 50% 25%, rgba(220,220,220,0.16), rgba(11,13,16,0.94) 56%), rgba(9,10,13,0.985);
+    }
+
+    .start-menu-card {
+      width: min(640px, 92vw);
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(22,27,33,0.98), rgba(11,13,16,0.98));
+      box-shadow: 0 22px 50px rgba(0,0,0,0.4);
+      padding: 28px 24px 24px;
+      text-align: center;
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+    }
+
+    .start-menu-typing {
+      min-height: 72px;
+      margin-bottom: 20px;
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: clamp(18px, 3.1vw, 30px);
+      letter-spacing: 0.8px;
+      line-height: 1.45;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .start-menu-caret {
+      width: 2px;
+      height: 0.95em;
+      background: var(--ink-dim);
+      animation: menuCaretBlink 0.9s steps(1) infinite;
+    }
+
+    @keyframes menuCaretBlink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .start-menu-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .start-menu-actions button {
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.03);
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .start-menu-actions button:hover {
+      border-color: var(--ink-dim);
+      background: rgba(255,255,255,0.08);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+
+      .bucket-card,
+      .mac-bucket-mode .bucket-card,
+      .safari-bucket-fallback .bucket-card {
+        transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, opacity 0.16s ease !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-left">
+      <div class="site-header-title">Creative's Mind</div>
+    </div>
+    <nav class="site-nav" aria-label="Page sections">
+      <a href="#feedPanel">Idea Feed</a>
+      <a href="#shotListsPage">Shot Lists</a>
+      <a href="#scriptPage">Scripts</a>
+    </nav>
+    <div class="auth-controls">
+      <button type="button" id="appFullscreenBtn">Full Screen</button>
+      <div class="auth-drawer" id="authDrawer">
+        <button type="button" class="auth-drawer-toggle" id="authDrawerToggle" aria-expanded="false" aria-controls="authDrawerMenu">Account</button>
+        <div class="auth-drawer-menu" id="authDrawerMenu">
+          <button type="button" id="googleSignInBtn">Sign In</button>
+          <button type="button" id="googleSignOutBtn" hidden>Sign Out</button>
+        </div>
+      </div>
+      <div class="auth-status" id="authStatusText">Local only</div>
+    </div>
+  </header>
+
+  <div class="start-menu-overlay" id="startMenuOverlay" aria-modal="true" role="dialog" aria-label="Start menu">
+    <div class="start-menu-card">
+      <div class="start-menu-typing" id="startMenuTyping" aria-live="polite">
+        <span id="startMenuTypingText"></span>
+        <span class="start-menu-caret" aria-hidden="true"></span>
+      </div>
+      <div class="start-menu-actions">
+        <button type="button" data-start-target="feed">Idea Feed</button>
+        <button type="button" data-start-target="shot">Shot List</button>
+        <button type="button" data-start-target="script">Script</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="board-title-modal-overlay" id="boardTitleModal" aria-hidden="true">
+    <div class="board-title-modal-card" role="dialog" aria-modal="true" aria-labelledby="boardTitleModalLabel">
+      <div class="board-title-modal-title" id="boardTitleModalLabel">Rename Board Title</div>
+      <input type="text" id="boardTitleModalInput" class="board-title-modal-input" maxlength="60" placeholder="Enter board title" />
+      <div class="board-title-modal-actions">
+        <button type="button" id="boardTitleModalCancel" class="board-title-modal-cancel">Cancel</button>
+        <button type="button" id="boardTitleModalSave" class="board-title-modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="script-page" id="scriptPage" aria-label="Script writing page">
+    <div class="script-shell">
+      <div class="script-toolbar">
+        <div class="script-title">Scripts</div>
+        <div class="script-status" id="scriptStatus">Auto-saves locally</div>
+      </div>
+      <div class="script-tools">
+        <div class="script-doc-manager">
+          <input type="text" id="scriptDocNameInput" placeholder="New script title" maxlength="40" />
+          <button type="button" id="scriptCreateDocBtn">+ New Script</button>
+          <button type="button" id="scriptDeleteDocBtn">Delete Script</button>
+          <div class="script-doc-list" id="scriptDocList"></div>
+        </div>
+      </div>
+      <div class="script-tools">
+        <button type="button" data-script-tag="scene">Scene Heading</button>
+        <button type="button" data-script-tag="action">Action</button>
+        <div class="script-character-wrap">
+          <button type="button" id="scriptCharacterButton">Character</button>
+          <div class="script-character-menu">
+            <div class="script-character-menu-head">
+              <input type="text" id="scriptCharacterNameInput" placeholder="Add character" maxlength="36" />
+              <button type="button" id="scriptCharacterAddBtn" class="script-character-menu-add">Add</button>
+            </div>
+            <div class="script-character-list" id="scriptCharacterList"></div>
+          </div>
+        </div>
+        <button type="button" data-script-tag="dialogue">Dialogue</button>
+        <button type="button" data-script-tag="parenthetical">Parenthetical</button>
+        <button type="button" id="scriptBoldBtn"><strong>B</strong></button>
+        <button type="button" id="scriptItalicBtn"><em>I</em></button>
+        <button type="button" id="scriptUnderlineBtn"><span style="text-decoration: underline;">U</span></button>
+        <select id="scriptFontSizeSelect" class="script-format-select">
+          <option value="">Size</option>
+          <option value="12">12</option>
+          <option value="14">14</option>
+          <option value="16">16</option>
+          <option value="18">18</option>
+          <option value="20">20</option>
+          <option value="22">22</option>
+          <option value="24">24</option>
+          <option value="28">28</option>
+          <option value="32">32</option>
+        </select>
+        <button type="button" id="scriptAddPageBtn">+ Add Page</button>
+        <button type="button" id="scriptFullscreenBtn">Full Screen</button>
+      </div>
+      <div class="script-fullscreen-rail" id="scriptFullscreenRail">
+        <button type="button" id="scriptRailNewBtn">+ New Script</button>
+        <button type="button" id="scriptRailDeleteBtn">Delete Script</button>
+        <button type="button" id="scriptRailAddPageBtn">+ Add Page</button>
+        <button type="button" id="scriptRailFullscreenBtn">Exit Full Screen</button>
+      </div>
+      <div class="script-paper-stack" id="scriptPaperStack"></div>
+    </div>
+  </section>
+
+  <section class="shot-page" id="shotListsPage" aria-label="Shot lists page">
+    <div class="shot-shell">
+      <div class="shot-toolbar">
+        <div class="shot-title">Shot Lists</div>
+        <div class="shot-status" id="shotStatus">Categories save locally</div>
+      </div>
+      <div class="shot-controls">
+        <input type="text" id="shotCategoryNameInput" placeholder="Add a shot list category" maxlength="32" />
+        <button type="button" id="shotCategoryAddBtn">Add category</button>
+      </div>
+      <div class="shot-board" id="shotBoard"></div>
+    </div>
+  </section>
+
+  <div class="shot-overlay" id="shotOverlay" aria-hidden="true">
+    <div class="shot-modal">
+      <div class="shot-modal-head">
+        <div class="shot-modal-title" id="shotModalTitle">Category</div>
+        <button class="shot-modal-close" id="shotModalClose" aria-label="Close shot category">&times;</button>
+      </div>
+      <div class="shot-modal-body">
+        <div class="shot-modal-add">
+          <button type="button" id="shotModalAddBtn">+ Add Shot</button>
+        </div>
+        <div id="shotModalList"></div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="capture-sidebar" id="feedPanel">
+    <div class="capture-sidebar-head">
+      <h2>Idea Feed</h2>
+      <p>Tag it with MAIN, GAMING, or FILM to route it.</p>
+    </div>
+    <div class="capture-feed" id="captureFeed"></div>
+    <div class="capture-form">
+      <div class="capture-row">
+        <textarea id="captureInput" rows="2" placeholder="Write an idea, tag it with *MAIN*, *GAMING*, or *FILM*…"></textarea>
+        <button id="captureBtn" disabled>Add idea</button>
+      </div>
+      <div class="capture-footer">
+        <div class="tag-hint" id="tagHint"></div>
+        <div class="capture-msg" id="captureMsg">Tag it and hit Add — no tag needed if you’re adding from inside an open bucket.</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="app">
+    <header>
+      <div class="brand-mark">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open menu">☰</button>
+        <div class="board-title-wrap">
+          <h1 id="boardTitleText">Creative's Mind</h1>
+          <button type="button" class="board-title-edit" id="boardTitleEditBtn">Rename</button>
+        </div>
+      </div>
+      <div class="mobile-menu-sheet" id="mobileMenuSheet">
+        <button type="button" data-section="feed">Idea Feed</button>
+        <button type="button" data-section="buckets">Buckets</button>
+        <button type="button" data-section="pinned">Pinned</button>
+      </div>
+    </header>
+
+    <div class="bucket-add-row">
+      <input type="text" id="bucketNameInput" placeholder="Add a custom bucket name" maxlength="28" />
+      <input type="text" id="bucketEmojiInput" value="📝" aria-hidden="true" tabindex="-1" />
+      <div class="bucket-emoji-picker" id="bucketEmojiPicker">
+        <button type="button" class="bucket-emoji-trigger" id="bucketEmojiTrigger" aria-label="Choose bucket emoji">📝</button>
+        <div class="bucket-emoji-palette" id="bucketEmojiPalette" aria-label="Pick a bucket emoji">
+          <button type="button" class="bucket-emoji-btn" data-emoji="📝" aria-label="Note emoji">📝</button>
+          <button type="button" class="bucket-emoji-btn" data-emoji="💡" aria-label="Idea emoji">💡</button>
+          <button type="button" class="bucket-emoji-btn" data-emoji="🔥" aria-label="Fire emoji">🔥</button>
+          <button type="button" class="bucket-emoji-btn" data-emoji="🎯" aria-label="Target emoji">🎯</button>
+          <button type="button" class="bucket-emoji-btn" data-emoji="📈" aria-label="Chart emoji">📈</button>
+          <button type="button" class="bucket-emoji-btn" data-emoji="🎬" aria-label="Film emoji">🎬</button>
+          <button type="button" class="bucket-emoji-btn" data-emoji="🎮" aria-label="Gaming emoji">🎮</button>
+        </div>
+      </div>
+      <button type="button" id="bucketAddBtn">Add bucket</button>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="bottom-summary">
+      <div class="bottom-summary-head">
+        <div class="bottom-summary-label">Ideas logged</div>
+        <div class="bottom-summary-count" id="bottomSummaryCount">0</div>
+      </div>
+      <div class="goal-mini">
+        <div class="goal-mini-label">
+          <span>Month goal</span>
+          <span id="headerGoalLabel">0 / 30</span>
+        </div>
+        <div class="goal-mini-bar">
+          <div id="headerGoalBar"></div>
+        </div>
+        <div class="goal-mini-text" id="headerGoalText">0 more ideas to hit this month.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modal-stripe" id="modalStripe"></div>
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Bucket</div>
+        <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-add">
+        <div class="tweet-composer">
+          <div class="composer-body">
+            <input type="text" id="modalInput" placeholder="What's the idea?" />
+            <div class="desc-toggle-wrap">
+              <div class="toggle-row">
+                <button type="button" class="desc-toggle" id="modalDescToggle" aria-expanded="false" title="Add thoughts emoji">
+                  <span class="chevron">▾</span> 💭
+                </button>
+                <button type="button" class="pin-toggle" id="modalPinToggle" aria-pressed="false" title="Pin this idea">📌</button>
+              </div>
+              <div class="desc-collapse" id="modalDescCollapse" hidden>
+                <textarea id="modalDescInput" placeholder="Notes, angle, what to include… (optional)"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-add-row">
+          <button id="modalAddBtn">Add</button>
+        </div>
+      </div>
+      <div class="modal-list" id="modalList"></div>
+    </div>
+  </div>
+
+  <aside class="pinned-sidebar" id="pinnedPanel">
+    <div class="pinned-sidebar-head">
+      <h2>Pinned</h2>
+      <p>Ideas you've flagged to act on.</p>
+    </div>
+    <div class="pinned-list" id="pinnedList"></div>
+    <div class="goal-card">
+      <div class="goal-head">
+        <span>Monthly Goal</span>
+        <strong id="goalStatus">0 / 0</strong>
+      </div>
+      <div class="goal-row">
+        <label class="goal-label" for="goalTarget">Target</label>
+        <input class="goal-input" id="goalTarget" type="number" min="1" value="30" />
+      </div>
+      <div class="goal-progress">
+        <div id="goalBar"></div>
+      </div>
+      <div class="goal-note" id="goalNote"></div>
+    </div>
+  </aside>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script>
+    const DEFAULT_BUCKETS = {
+      main: { label: 'Main Channel', color: 'var(--main-c)', cssClass: 'main', emoji: '💭' },
+      gaming: { label: 'Gaming', color: 'var(--gaming-c)', cssClass: 'gaming', emoji: '🎮' },
+      film: { label: 'Film', color: 'var(--film-c)', cssClass: 'film', emoji: '🎬' },
+    };
+
+    const BUCKET_META_KEY = 'malones-mind-buckets-meta';
+    const STORAGE_KEY = 'video-idea-buckets';
+    const GOAL_KEY = 'video-idea-monthly-goal';
+    const SHOT_KEY = 'malones-mind-shot-lists';
+    const BOARD_TITLE_KEY = 'malones-mind-board-title';
+    const START_DEST_KEY = 'malones-mind-start-destination';
+    const AUTH_REDIRECT_STATE_KEY = 'malones-mind-auth-redirect-pending';
+    const FIREBASE_CONFIG = {
+      apiKey: 'AIzaSyBOFwZ_hJbp-b2p1z-wHoCSEXqzjYNRBpE',
+      authDomain: 'creartiveminds-b2b93.firebaseapp.com',
+      projectId: 'creartiveminds-b2b93',
+      appId: '1:203375991984:web:a81bb5ded0a1bb8180ef75',
+    };
+    let CLOUD_SYNC_KEYS = [
+      BUCKET_META_KEY,
+      STORAGE_KEY,
+      GOAL_KEY,
+      SHOT_KEY,
+      BOARD_TITLE_KEY,
+    ];
+    const cloudSyncState = {
+      enabled: false,
+      auth: null,
+      db: null,
+      user: null,
+      saveTimer: null,
+      isApplyingRemote: false,
+    };
+    const DEFAULT_BUCKET_KEYS = new Set(['main', 'gaming', 'film']);
+    const DEFAULT_SHOT_CATEGORY = 'Sequence';
+    let BUCKETS = JSON.parse(JSON.stringify(DEFAULT_BUCKETS));
+    let SHOT_CATEGORIES = {};
+    let activeShotCategory = null;
+    let data = { main: [], gaming: [], film: [] };
+    const CUSTOM_BUCKET_COLORS = ['#7dd3fc', '#93c5fd', '#c4b5fd', '#a7f3d0', '#f9a8d4', '#fcd34d'];
+
+    (function applySafariBucketFallback() {
+      const ua = navigator.userAgent || '';
+      const isSafari = /Safari/i.test(ua) && !/Chrome|CriOS|Edg|OPR|Firefox|FxiOS/i.test(ua);
+      if (isSafari) {
+        document.body.classList.add('safari-bucket-fallback');
+      }
+    })();
+
+    (function applyMacBucketMode() {
+      const ua = navigator.userAgent || '';
+      const isElectron = /Electron/i.test(ua);
+      const isMacDesktop = isElectron && /Macintosh|Mac OS X/i.test(ua) && !/iPhone|iPad|iPod/i.test(ua);
+      if (isMacDesktop) {
+        document.body.classList.add('mac-bucket-mode');
+      }
+    })();
+
+    (function applyMacWebLayoutMode() {
+      const ua = navigator.userAgent || '';
+      const isElectron = /Electron/i.test(ua);
+      const isMacDesktopBrowser = !isElectron && /Macintosh|Mac OS X/i.test(ua) && !/iPhone|iPad|iPod/i.test(ua);
+      if (isMacDesktopBrowser) {
+        document.body.classList.add('mac-web-layout');
+      }
+    })();
+
+    function isSafariBucketFallback() {
+      return document.body.classList.contains('safari-bucket-fallback');
+    }
+
+    function isMacBucketMode() {
+      return document.body.classList.contains('mac-bucket-mode');
+    }
+
+    function hasFirebaseConfig() {
+      return Boolean(
+        FIREBASE_CONFIG.apiKey
+        && FIREBASE_CONFIG.authDomain
+        && FIREBASE_CONFIG.projectId
+        && FIREBASE_CONFIG.appId
+      );
+    }
+
+    function setAuthStatus(message, isError = false) {
+      const authStatus = document.getElementById('authStatusText');
+      if (!authStatus) return;
+      authStatus.textContent = message;
+      authStatus.classList.toggle('error', isError);
+    }
+
+    function updateAuthControls() {
+      const signInBtn = document.getElementById('googleSignInBtn');
+      const signOutBtn = document.getElementById('googleSignOutBtn');
+      const user = cloudSyncState.user;
+      if (!signInBtn || !signOutBtn) return;
+
+      if (!cloudSyncState.enabled) {
+        signInBtn.hidden = true;
+        signOutBtn.hidden = true;
+        setAuthStatus('Local only (cloud off)');
+        return;
+      }
+
+      if (user) {
+        signInBtn.hidden = true;
+        signOutBtn.hidden = false;
+        setAuthStatus(`Synced as ${user.displayName || user.email || 'Google user'}`);
+      } else {
+        signInBtn.hidden = false;
+        signOutBtn.hidden = true;
+        setAuthStatus('Local only');
+      }
+    }
+
+    function getAuthErrorMessage(error) {
+      const code = error?.code || '';
+      if (code === 'auth/popup-blocked') return 'Popup blocked. Retrying with redirect...';
+      if (code === 'auth/popup-closed-by-user') return 'Sign-in popup was closed.';
+      if (code === 'auth/cancelled-popup-request') return 'Sign-in request was interrupted. Please try again.';
+      if (code === 'auth/unauthorized-domain') {
+        const host = window.location?.hostname || 'this host';
+        return `This domain is not authorized in Firebase Auth settings. Add: ${host}`;
+      }
+      if (code === 'auth/operation-not-supported-in-this-environment') return 'Use http://localhost or 127.0.0.1 (not file://) for Google sign-in.';
+      if (code === 'auth/web-storage-unsupported') return 'Browser storage is blocked. Allow cookies/storage and try again.';
+      if (code === 'auth/network-request-failed') return 'Network issue. Check connection and try again.';
+      if (code === 'auth/invalid-api-key') return 'Invalid Firebase apiKey in app config.';
+      if (code === 'auth/invalid-credential') return 'Google credential rejected. Try again.';
+      if (code === 'auth/app-not-authorized') return 'Firebase app not authorized. Verify authDomain/projectId values.';
+      if (code) return `Google sign-in failed: ${code}`;
+      return 'Google sign-in failed.';
+    }
+
+    function setAuthErrorDetailed(error, fallbackMessage = 'Google sign-in failed.') {
+      const code = error?.code ? ` (${error.code})` : '';
+      const msg = error?.message ? ` ${error.message}` : '';
+      setAuthStatus(`${fallbackMessage}${code}${msg}`, true);
+    }
+
+    function shouldUseRedirectSignIn() {
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPhone|iPad|iPod/i.test(ua);
+      const isSafari = /Safari/i.test(ua) && !/Chrome|CriOS|Edg|OPR|Firefox|FxiOS/i.test(ua);
+      const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+      const host = (window.location && window.location.hostname) ? window.location.hostname : '';
+      const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+
+      // Safari localhost often closes popup without persisting session; use redirect there.
+      if (isLocalHost && isSafari) return true;
+      // Other localhost browsers work better with popup-first.
+      if (isLocalHost) return false;
+      return isIOS || isSafari || isStandalone;
+    }
+
+    function setAuthRedirectPending(isPending) {
+      try {
+        if (isPending) {
+          sessionStorage.setItem(AUTH_REDIRECT_STATE_KEY, '1');
+        } else {
+          sessionStorage.removeItem(AUTH_REDIRECT_STATE_KEY);
+        }
+      } catch (e) {
+        console.warn('Could not update auth redirect state:', e);
+      }
+    }
+
+    function hasAuthRedirectPending() {
+      try {
+        return sessionStorage.getItem(AUTH_REDIRECT_STATE_KEY) === '1';
+      } catch (e) {
+        console.warn('Could not read auth redirect state:', e);
+        return false;
+      }
+    }
+
+    function getCloudDocRef() {
+      if (!cloudSyncState.db || !cloudSyncState.user) return null;
+      return cloudSyncState.db.collection('creative-mind-users').doc(cloudSyncState.user.uid);
+    }
+
+    function queueCloudSyncSave() {
+      if (!cloudSyncState.enabled || !cloudSyncState.user || cloudSyncState.isApplyingRemote) return;
+      if (cloudSyncState.saveTimer) {
+        clearTimeout(cloudSyncState.saveTimer);
+      }
+      cloudSyncState.saveTimer = setTimeout(() => {
+        cloudSyncState.saveTimer = null;
+        pushCloudSnapshot();
+      }, 700);
+    }
+
+    async function pushCloudSnapshot() {
+      if (!cloudSyncState.enabled || !cloudSyncState.user || cloudSyncState.isApplyingRemote) return;
+      const docRef = getCloudDocRef();
+      if (!docRef) return;
+
+      const payload = {};
+      CLOUD_SYNC_KEYS.forEach((key) => {
+        payload[key] = localStorage.getItem(key);
+      });
+
+      try {
+        await docRef.set({
+          payload,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true });
+        setAuthStatus(`Synced as ${cloudSyncState.user.displayName || cloudSyncState.user.email || 'Google user'}`);
+      } catch (e) {
+        console.warn('Cloud save failed:', e);
+        setAuthStatus('Sync failed (save)', true);
+      }
+    }
+
+    function reloadFromLocalStorage() {
+      loadScriptDocuments();
+      loadScriptCharacters();
+      renderScriptDocumentList();
+      renderScriptPages();
+      renderScriptCharacters();
+      loadData();
+      loadBoardTitle();
+      updateCaptureState();
+    }
+
+    function setBoardTitle(value) {
+      const titleEl = document.getElementById('boardTitleText');
+      if (!titleEl) return;
+      const clean = String(value || '').trim() || 'Creative\'s Mind';
+      titleEl.textContent = clean;
+    }
+
+    function loadBoardTitle() {
+      try {
+        setBoardTitle(localStorage.getItem(BOARD_TITLE_KEY) || 'Creative\'s Mind');
+      } catch (e) {
+        console.warn('Could not load board title:', e);
+        setBoardTitle('Creative\'s Mind');
+      }
+    }
+
+    function saveBoardTitle(value) {
+      try {
+        localStorage.setItem(BOARD_TITLE_KEY, String(value || '').trim() || 'Creative\'s Mind');
+        queueCloudSyncSave();
+      } catch (e) {
+        console.warn('Could not save board title:', e);
+      }
+    }
+
+    async function pullCloudSnapshot() {
+      if (!cloudSyncState.enabled || !cloudSyncState.user) return;
+      const docRef = getCloudDocRef();
+      if (!docRef) return;
+
+      try {
+        const snap = await docRef.get();
+        if (!snap.exists) {
+          setAuthStatus('Cloud ready (first sync pending)');
+          return;
+        }
+
+        const payload = snap.data()?.payload;
+        if (!payload || typeof payload !== 'object') {
+          return;
+        }
+
+        cloudSyncState.isApplyingRemote = true;
+        CLOUD_SYNC_KEYS.forEach((key) => {
+          const value = payload[key];
+          if (typeof value === 'string') {
+            localStorage.setItem(key, value);
+          }
+        });
+        cloudSyncState.isApplyingRemote = false;
+
+        reloadFromLocalStorage();
+        setAuthStatus(`Synced as ${cloudSyncState.user.displayName || cloudSyncState.user.email || 'Google user'}`);
+      } catch (e) {
+        cloudSyncState.isApplyingRemote = false;
+        console.warn('Cloud load failed:', e);
+        setAuthStatus('Sync failed (load)', true);
+      }
+    }
+
+    function initCloudSync() {
+      const signInBtn = document.getElementById('googleSignInBtn');
+      const signOutBtn = document.getElementById('googleSignOutBtn');
+
+      if (!window.firebase || !hasFirebaseConfig()) {
+        updateAuthControls();
+        return;
+      }
+
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        cloudSyncState.auth = firebase.auth();
+        cloudSyncState.db = firebase.firestore();
+        cloudSyncState.enabled = true;
+      } catch (e) {
+        console.warn('Firebase init failed:', e);
+        setAuthStatus('Cloud init failed', true);
+        updateAuthControls();
+        return;
+      }
+
+      cloudSyncState.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((e) => {
+        console.warn('Could not enable local auth persistence:', e);
+      });
+
+      cloudSyncState.auth.onAuthStateChanged(async (user) => {
+        cloudSyncState.user = user || null;
+        updateAuthControls();
+        if (user) {
+          await pullCloudSnapshot();
+        }
+      });
+
+      cloudSyncState.auth.getRedirectResult()
+        .then((result) => {
+          if (result?.user) {
+            setStartMenuOpen(false);
+            navigateToDestination(loadStartDestination() || 'feed', false);
+          } else if (hasAuthRedirectPending()) {
+            setAuthStatus('Google redirect returned, but no user session was created. Allow cookies/popups for localhost and try again.', true);
+          }
+        })
+        .catch((e) => {
+          console.warn('Redirect sign-in failed:', e);
+          setAuthErrorDetailed(e, getAuthErrorMessage(e));
+        })
+        .finally(() => {
+          setAuthRedirectPending(false);
+        });
+
+      signInBtn?.addEventListener('click', async () => {
+        if (window.location.protocol === 'file:') {
+          setAuthStatus('Google sign-in is unavailable on file://. Open from Netlify or localhost.', true);
+          return;
+        }
+
+        setAuthStatus('Opening Google sign-in...');
+        if (signInBtn) signInBtn.disabled = true;
+
+        try {
+          const provider = new firebase.auth.GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
+          cloudSyncState.auth.useDeviceLanguage();
+
+          if (shouldUseRedirectSignIn()) {
+            setAuthRedirectPending(true);
+            await cloudSyncState.auth.signInWithRedirect(provider);
+            return;
+          }
+
+          await cloudSyncState.auth.signInWithPopup(provider);
+        } catch (e) {
+          console.warn('Sign-in failed:', e);
+          if (e?.code === 'auth/popup-blocked'
+            || e?.code === 'auth/popup-closed-by-user'
+            || e?.code === 'auth/cancelled-popup-request'
+            || e?.code === 'auth/operation-not-supported-in-this-environment') {
+            const host = (window.location && window.location.hostname) ? window.location.hostname : '';
+            const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+            if (isLocalHost) {
+              setAuthStatus('Popup was blocked. Allow popups for localhost and try Sign In again.', true);
+              return;
+            }
+            try {
+              const provider = new firebase.auth.GoogleAuthProvider();
+              setAuthStatus('Trying redirect sign-in...');
+              setAuthRedirectPending(true);
+              await cloudSyncState.auth.signInWithRedirect(provider);
+              return;
+            } catch (redirectErr) {
+              setAuthRedirectPending(false);
+              console.warn('Redirect fallback failed:', redirectErr);
+              setAuthErrorDetailed(redirectErr, getAuthErrorMessage(redirectErr));
+              return;
+            }
+          }
+          setAuthErrorDetailed(e, getAuthErrorMessage(e));
+        } finally {
+          if (signInBtn) signInBtn.disabled = false;
+        }
+      });
+
+      signOutBtn?.addEventListener('click', async () => {
+        try {
+          await cloudSyncState.auth.signOut();
+          cloudSyncState.user = null;
+          updateAuthControls();
+        } catch (e) {
+          console.warn('Sign-out failed:', e);
+          setAuthStatus('Sign-out failed', true);
+        }
+      });
+
+      updateAuthControls();
+    }
+
+    function showIdeaFeedView() {
+      document.body.classList.remove('shot-active');
+      document.body.classList.remove('script-active');
+      document.querySelectorAll('.site-nav a').forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#feedPanel');
+      });
+    }
+
+    function showShotListsView() {
+      document.body.classList.add('shot-active');
+      document.body.classList.remove('script-active');
+      document.querySelectorAll('.site-nav a').forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#shotListsPage');
+      });
+    }
+
+    function showScriptView() {
+      document.body.classList.remove('shot-active');
+      document.body.classList.add('script-active');
+      document.querySelectorAll('.site-nav a').forEach((link) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#scriptPage');
+      });
+    }
+
+    function normalizeStartDestination(value) {
+      if (value === 'shot' || value === 'script') return value;
+      return 'feed';
+    }
+
+    function saveStartDestination(dest) {
+      try {
+        localStorage.setItem(START_DEST_KEY, normalizeStartDestination(dest));
+      } catch (e) {
+        console.warn('Could not save start destination:', e);
+      }
+    }
+
+    function loadStartDestination() {
+      try {
+        const saved = localStorage.getItem(START_DEST_KEY);
+        if (!saved) return null;
+        return normalizeStartDestination(saved);
+      } catch (e) {
+        console.warn('Could not load start destination:', e);
+        return null;
+      }
+    }
+
+    function isReloadNavigation() {
+      try {
+        const nav = performance.getEntriesByType && performance.getEntriesByType('navigation');
+        if (Array.isArray(nav) && nav[0] && nav[0].type) {
+          return nav[0].type === 'reload';
+        }
+      } catch (e) {
+        console.warn('Could not inspect navigation type:', e);
+      }
+      return performance?.navigation?.type === 1;
+    }
+
+    function navigateToDestination(dest, smooth = true) {
+      const destination = normalizeStartDestination(dest);
+      const behavior = smooth ? 'smooth' : 'auto';
+
+      if (destination === 'shot') {
+        showShotListsView();
+        document.getElementById('shotListsPage')?.scrollIntoView({ behavior, block: 'start' });
+      } else if (destination === 'script') {
+        showScriptView();
+        document.getElementById('scriptPage')?.scrollIntoView({ behavior, block: 'start' });
+      } else {
+        showIdeaFeedView();
+        document.getElementById('feedPanel')?.scrollIntoView({ behavior, block: 'start' });
+      }
+
+      saveStartDestination(destination);
+    }
+
+    document.querySelectorAll('.site-nav a').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const href = link.getAttribute('href');
+        if (href === '#shotListsPage') {
+          navigateToDestination('shot', true);
+          return;
+        }
+        if (href === '#scriptPage') {
+          navigateToDestination('script', true);
+          return;
+        }
+        navigateToDestination('feed', true);
+      });
+    });
+
+    function getFullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    function updateAppFullscreenButton() {
+      const btn = document.getElementById('appFullscreenBtn');
+      if (!btn) return;
+      const isFullscreen = !!getFullscreenElement();
+      btn.textContent = isFullscreen ? 'Exit Full Screen' : 'Full Screen';
+    }
+
+    async function toggleAppFullscreen() {
+      const root = document.documentElement;
+      const isFullscreen = !!getFullscreenElement();
+
+      try {
+        if (!isFullscreen) {
+          if (root.requestFullscreen) {
+            await root.requestFullscreen();
+          } else if (root.webkitRequestFullscreen) {
+            root.webkitRequestFullscreen();
+          }
+        } else if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      } catch (e) {
+        console.warn('Could not toggle full screen:', e);
+      }
+
+      updateAppFullscreenButton();
+    }
+
+    document.getElementById('appFullscreenBtn')?.addEventListener('click', toggleAppFullscreen);
+    document.addEventListener('fullscreenchange', updateAppFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateAppFullscreenButton);
+    document.addEventListener('keydown', (e) => {
+      // Mac-friendly fullscreen shortcut fallback (Control + Command + F).
+      if ((e.key === 'f' || e.key === 'F') && e.metaKey && e.ctrlKey && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        toggleAppFullscreen();
+      }
+    });
+    updateAppFullscreenButton();
+
+    const authDrawer = document.getElementById('authDrawer');
+    const authDrawerToggle = document.getElementById('authDrawerToggle');
+
+    authDrawerToggle?.addEventListener('click', () => {
+      const willOpen = !authDrawer?.classList.contains('open');
+      authDrawer?.classList.toggle('open', willOpen);
+      authDrawerToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!authDrawer || !authDrawerToggle) return;
+      if (!authDrawer.classList.contains('open')) return;
+      if (authDrawer.contains(event.target)) return;
+      authDrawer.classList.remove('open');
+      authDrawerToggle.setAttribute('aria-expanded', 'false');
+    });
+
+    const startMenuOverlay = document.getElementById('startMenuOverlay');
+    const startMenuActions = startMenuOverlay?.querySelector('.start-menu-actions');
+    const startMenuTypingText = document.getElementById('startMenuTypingText');
+    let startMenuTypeToken = 0;
+
+    function setStartMenuOpen(isOpen) {
+      if (!startMenuOverlay) return;
+      startMenuOverlay.classList.toggle('open', isOpen);
+      document.body.classList.toggle('start-menu-active', isOpen);
+    }
+
+    async function typeStartMenuLine(text, speed, token) {
+      if (!startMenuTypingText) return;
+      startMenuTypingText.textContent = '';
+
+      for (const ch of text) {
+        if (token !== startMenuTypeToken) return;
+        startMenuTypingText.textContent += ch;
+        await new Promise((resolve) => setTimeout(resolve, speed));
+      }
+    }
+
+    async function playStartMenuIntro() {
+      if (!startMenuTypingText) return;
+
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const token = ++startMenuTypeToken;
+      const speed = reduceMotion ? 0 : 95;
+
+      if (speed === 0) {
+        startMenuTypingText.textContent = 'Ready for your creativity';
+        return;
+      }
+
+      await typeStartMenuLine('Welcome', speed, token);
+      if (token !== startMenuTypeToken) return;
+      await new Promise((resolve) => setTimeout(resolve, 1400));
+      if (token !== startMenuTypeToken) return;
+      startMenuTypingText.textContent = '';
+      await new Promise((resolve) => setTimeout(resolve, 260));
+      if (token !== startMenuTypeToken) return;
+      await typeStartMenuLine('Ready for your creativity', speed, token);
+    }
+
+    function setStartMenuPreview(target) {
+      if (!startMenuOverlay) return;
+      if (!startMenuOverlay.classList.contains('open')) return;
+      startMenuOverlay.classList.remove('preview-feed', 'preview-shot', 'preview-script');
+
+      if (target === 'shot') {
+        startMenuOverlay.classList.add('preview-shot');
+        showShotListsView();
+      } else if (target === 'script') {
+        startMenuOverlay.classList.add('preview-script');
+        showScriptView();
+      } else {
+        startMenuOverlay.classList.add('preview-feed');
+        showIdeaFeedView();
+      }
+    }
+
+    function routeFromStartMenu(target) {
+      navigateToDestination(target, true);
+      setStartMenuOpen(false);
+    }
+
+    startMenuOverlay?.querySelectorAll('button[data-start-target]').forEach((btn) => {
+      btn.addEventListener('mouseenter', () => {
+        setStartMenuPreview(btn.dataset.startTarget || 'feed');
+      });
+      btn.addEventListener('focus', () => {
+        setStartMenuPreview(btn.dataset.startTarget || 'feed');
+      });
+      btn.addEventListener('click', () => {
+        routeFromStartMenu(btn.dataset.startTarget || 'feed');
+      });
+    });
+
+    startMenuActions?.addEventListener('mouseleave', () => {
+      if (!startMenuOverlay?.classList.contains('open')) return;
+      setStartMenuPreview('feed');
+    });
+
+    const rememberedStartDestination = loadStartDestination();
+    if (hasAuthRedirectPending()) {
+      setStartMenuOpen(false);
+      navigateToDestination(rememberedStartDestination || 'feed', false);
+    } else if (isReloadNavigation() && rememberedStartDestination) {
+      setStartMenuOpen(false);
+      navigateToDestination(rememberedStartDestination, false);
+    } else {
+      setStartMenuOpen(true);
+      setStartMenuPreview('feed');
+      playStartMenuIntro();
+    }
+
+    const shotStatus = document.getElementById('shotStatus');
+    const scriptStatus = document.getElementById('scriptStatus');
+    const SCRIPT_KEY = 'malones-mind-script-page';
+    const SCRIPT_PAGES_KEY = 'malones-mind-script-pages';
+    const SCRIPT_CHARACTERS_KEY = 'malones-mind-script-characters';
+    const SCRIPT_DOCUMENTS_KEY = 'malones-mind-script-documents';
+    const SCRIPT_ACTIVE_DOC_KEY = 'malones-mind-script-active-doc';
+    CLOUD_SYNC_KEYS = CLOUD_SYNC_KEYS.concat([
+      SCRIPT_KEY,
+      SCRIPT_PAGES_KEY,
+      SCRIPT_CHARACTERS_KEY,
+      SCRIPT_DOCUMENTS_KEY,
+      SCRIPT_ACTIVE_DOC_KEY,
+    ]);
+    let SCRIPT_CHARACTERS = [];
+    let SCRIPT_PAGES = [];
+    let SCRIPT_DOCUMENTS = [];
+    let ACTIVE_SCRIPT_DOC = 0;
+    const scriptInsertMap = {
+      scene: 'INT. LOCATION - DAY\n\n',
+      action: 'Action description.',
+      character: 'CHARACTER',
+      dialogue: 'Dialogue line here.',
+      parenthetical: '(beat)',
+    };
+
+    function loadScriptDocuments() {
+      try {
+        const savedDocs = localStorage.getItem(SCRIPT_DOCUMENTS_KEY);
+        if (savedDocs) {
+          const parsed = JSON.parse(savedDocs);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            SCRIPT_DOCUMENTS = parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load script documents:', e);
+      }
+
+      if (!Array.isArray(SCRIPT_DOCUMENTS) || SCRIPT_DOCUMENTS.length === 0) {
+        SCRIPT_DOCUMENTS = [{ id: uid(), name: 'Script 1', pages: [''] }];
+      }
+
+      const savedActiveIndex = Number(localStorage.getItem(SCRIPT_ACTIVE_DOC_KEY));
+      if (Number.isFinite(savedActiveIndex) && savedActiveIndex >= 0 && savedActiveIndex < SCRIPT_DOCUMENTS.length) {
+        ACTIVE_SCRIPT_DOC = savedActiveIndex;
+      } else {
+        ACTIVE_SCRIPT_DOC = 0;
+      }
+
+      const activeDoc = SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC];
+      if (!activeDoc || !Array.isArray(activeDoc.pages) || activeDoc.pages.length === 0) {
+        activeDoc.pages = [''];
+      }
+      SCRIPT_PAGES = activeDoc.pages.slice();
+    }
+
+    function saveScriptDocuments() {
+      localStorage.setItem(SCRIPT_DOCUMENTS_KEY, JSON.stringify(SCRIPT_DOCUMENTS));
+      localStorage.setItem(SCRIPT_ACTIVE_DOC_KEY, String(ACTIVE_SCRIPT_DOC));
+      const activeDoc = SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC];
+      if (activeDoc) {
+        activeDoc.pages = SCRIPT_PAGES.slice();
+      }
+      localStorage.setItem(SCRIPT_PAGES_KEY, JSON.stringify(SCRIPT_PAGES));
+      localStorage.setItem(SCRIPT_KEY, SCRIPT_PAGES.join('\n\n---PAGE---\n\n'));
+      if (scriptStatus) {
+        scriptStatus.textContent = 'Saved locally';
+      }
+      queueCloudSyncSave();
+    }
+
+    function renderScriptDocumentList() {
+      const docList = document.getElementById('scriptDocList');
+      if (!docList) return;
+
+      docList.innerHTML = '';
+      SCRIPT_DOCUMENTS.forEach((doc, index) => {
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'script-doc-chip' + (index === ACTIVE_SCRIPT_DOC ? ' active' : '');
+        pill.textContent = doc.name;
+        pill.addEventListener('click', () => {
+          ACTIVE_SCRIPT_DOC = index;
+          SCRIPT_PAGES = Array.isArray(SCRIPT_DOCUMENTS[index].pages) ? SCRIPT_DOCUMENTS[index].pages.slice() : [''];
+          saveScriptDocuments();
+          renderScriptDocumentList();
+          renderScriptPages();
+        });
+        docList.appendChild(pill);
+      });
+    }
+
+    function addScriptDocument() {
+      const input = document.getElementById('scriptDocNameInput');
+      const name = String(input?.value || '').trim();
+      const newDoc = {
+        id: uid(),
+        name: name || `Script ${SCRIPT_DOCUMENTS.length + 1}`,
+        pages: [''],
+      };
+      SCRIPT_DOCUMENTS.push(newDoc);
+      ACTIVE_SCRIPT_DOC = SCRIPT_DOCUMENTS.length - 1;
+      SCRIPT_PAGES = newDoc.pages.slice();
+      saveScriptDocuments();
+      renderScriptDocumentList();
+      renderScriptPages();
+      if (input) input.value = '';
+    }
+
+    function deleteActiveScriptDocument() {
+      if (SCRIPT_DOCUMENTS.length <= 1) {
+        if (!window.confirm('Delete the only remaining script?')) return;
+      } else if (!window.confirm(`Delete “${SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC]?.name || 'this script'}”?`)) {
+        return;
+      }
+
+      SCRIPT_DOCUMENTS.splice(ACTIVE_SCRIPT_DOC, 1);
+      ACTIVE_SCRIPT_DOC = Math.max(0, Math.min(ACTIVE_SCRIPT_DOC, SCRIPT_DOCUMENTS.length - 1));
+      if (!SCRIPT_DOCUMENTS.length) {
+        SCRIPT_DOCUMENTS = [{ id: uid(), name: 'Script 1', pages: [''] }];
+        ACTIVE_SCRIPT_DOC = 0;
+      }
+      SCRIPT_PAGES = Array.isArray(SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC].pages) ? SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC].pages.slice() : [''];
+      saveScriptDocuments();
+      renderScriptDocumentList();
+      renderScriptPages();
+    }
+
+    function renderScriptPages() {
+      const stack = document.getElementById('scriptPaperStack');
+      if (!stack) return;
+
+      const activeDoc = SCRIPT_DOCUMENTS[ACTIVE_SCRIPT_DOC];
+      if (activeDoc) {
+        activeDoc.pages = SCRIPT_PAGES.slice();
+      }
+
+      stack.innerHTML = '';
+      SCRIPT_PAGES.forEach((pageText, pageIndex) => {
+        const paper = document.createElement('div');
+        paper.className = 'script-paper';
+
+        const editor = document.createElement('div');
+        editor.className = 'script-editor';
+        editor.setAttribute('contenteditable', 'true');
+        editor.setAttribute('role', 'textbox');
+        editor.setAttribute('aria-multiline', 'true');
+        editor.dataset.pageIndex = pageIndex;
+        editor.dataset.placeholder = 'Write your script here...';
+        editor.innerHTML = normalizeScriptPageHtml(pageText);
+        editor.addEventListener('input', () => {
+          syncScriptPageFromEditor(editor);
+          updateScriptFormatHighlights();
+        });
+        editor.addEventListener('keyup', updateScriptFormatHighlights);
+        editor.addEventListener('click', updateScriptFormatHighlights);
+        paper.appendChild(editor);
+        stack.appendChild(paper);
+      });
+    }
+
+    function addScriptPage() {
+      SCRIPT_PAGES.push('');
+      saveScriptDocuments();
+      renderScriptPages();
+    }
+
+    function loadScriptCharacters() {
+      try {
+        const saved = localStorage.getItem(SCRIPT_CHARACTERS_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            SCRIPT_CHARACTERS = parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load script characters:', e);
+      }
+      if (!Array.isArray(SCRIPT_CHARACTERS)) {
+        SCRIPT_CHARACTERS = [];
+      }
+    }
+
+    function saveScriptCharacters() {
+      localStorage.setItem(SCRIPT_CHARACTERS_KEY, JSON.stringify(SCRIPT_CHARACTERS));
+      queueCloudSyncSave();
+    }
+
+    function renderScriptCharacters() {
+      const list = document.getElementById('scriptCharacterList');
+      if (!list) return;
+
+      if (SCRIPT_CHARACTERS.length === 0) {
+        list.innerHTML = '<div class="script-character-empty">No characters yet — add one above.</div>';
+        return;
+      }
+
+      list.innerHTML = SCRIPT_CHARACTERS.map((name, index) => `
+        <div class="script-character-item">
+          <span>${escapeHtml(name)}</span>
+          <button type="button" data-character-index="${index}">Delete</button>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('[data-character-index]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.dataset.characterIndex);
+          SCRIPT_CHARACTERS.splice(idx, 1);
+          saveScriptCharacters();
+          renderScriptCharacters();
+        });
+      });
+    }
+
+    function normalizeScriptPageHtml(value) {
+      const raw = String(value || '');
+      const looksLikeHtml = /<[^>]+>/.test(raw);
+      if (looksLikeHtml) return raw;
+      return escapeHtml(raw).replace(/\n/g, '<br>');
+    }
+
+    function getActiveScriptEditor() {
+      return document.querySelector('.script-paper .script-editor:focus') || document.querySelector('.script-paper .script-editor');
+    }
+
+    function syncScriptPageFromEditor(editor) {
+      if (!editor) return;
+      const pageIndex = Number(editor.dataset.pageIndex);
+      if (!Number.isNaN(pageIndex)) {
+        SCRIPT_PAGES[pageIndex] = editor.innerHTML;
+      }
+      saveScriptDocuments();
+    }
+
+    function applyInlineCommand(command) {
+      const editor = getActiveScriptEditor();
+      if (!editor) return;
+      editor.focus();
+      try {
+        document.execCommand(command, false, null);
+      } catch (e) {
+        console.warn(`Could not apply ${command}:`, e);
+      }
+      syncScriptPageFromEditor(editor);
+      updateScriptFormatHighlights();
+    }
+
+    function applyScriptFontSize(sizeValue) {
+      const editor = getActiveScriptEditor();
+      if (!editor) return;
+
+      const size = Number(sizeValue);
+      if (!Number.isFinite(size) || size < 8 || size > 96) return;
+
+      editor.focus();
+      const selection = window.getSelection();
+      const hasSelection = !!selection
+        && selection.rangeCount > 0
+        && editor.contains(selection.anchorNode)
+        && editor.contains(selection.focusNode)
+        && !selection.getRangeAt(0).collapsed;
+
+      if (!hasSelection) {
+        // No text selected: resize the whole current script page.
+        editor.style.fontSize = `${size}px`;
+        syncScriptPageFromEditor(editor);
+        updateScriptFormatHighlights();
+        return;
+      }
+
+      try {
+        document.execCommand('fontSize', false, '7');
+        editor.querySelectorAll('font[size="7"]').forEach((fontTag) => {
+          const span = document.createElement('span');
+          span.style.fontSize = `${size}px`;
+          span.innerHTML = fontTag.innerHTML;
+          fontTag.replaceWith(span);
+        });
+      } catch (err) {
+        console.warn('Could not apply font size:', err);
+      }
+
+      syncScriptPageFromEditor(editor);
+      updateScriptFormatHighlights();
+    }
+
+    function insertScriptToken(type) {
+      const editor = getActiveScriptEditor();
+      if (!editor) return;
+      const token = scriptInsertMap[type] || '';
+      editor.focus();
+
+      try {
+        document.execCommand('insertText', false, token);
+      } catch (e) {
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) {
+          editor.appendChild(document.createTextNode(token));
+        } else {
+          const range = selection.getRangeAt(0);
+          range.deleteContents();
+          const textNode = document.createTextNode(token);
+          range.insertNode(textNode);
+          range.setStartAfter(textNode);
+          range.setEndAfter(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+
+      syncScriptPageFromEditor(editor);
+      updateScriptFormatHighlights();
+    }
+
+    function insertSceneHeadingTemplate() {
+      const editor = getActiveScriptEditor();
+      if (!editor) return;
+
+      editor.focus();
+      const selection = window.getSelection();
+      if (!selection) return;
+
+      let range;
+      if (selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
+        range = selection.getRangeAt(0);
+      } else {
+        range = document.createRange();
+        range.selectNodeContents(editor);
+        range.collapse(false);
+      }
+
+      range.deleteContents();
+
+      const wrapper = document.createElement('span');
+      wrapper.className = 'script-scene-heading';
+
+      const prefix = document.createElement('span');
+      prefix.textContent = 'INT.';
+
+      const location = document.createElement('span');
+      location.className = 'script-scene-field';
+      location.textContent = 'LOCATION';
+
+      const time = document.createElement('span');
+      time.className = 'script-scene-field';
+      time.textContent = 'DAY';
+
+      wrapper.appendChild(prefix);
+      wrapper.appendChild(document.createTextNode(' '));
+      wrapper.appendChild(location);
+      wrapper.appendChild(document.createTextNode(' - '));
+      wrapper.appendChild(time);
+
+      const trailingBreakOne = document.createElement('br');
+      const trailingBreakTwo = document.createElement('br');
+
+      range.insertNode(trailingBreakTwo);
+      range.insertNode(trailingBreakOne);
+      range.insertNode(wrapper);
+
+      const locationRange = document.createRange();
+      locationRange.selectNodeContents(location);
+      selection.removeAllRanges();
+      selection.addRange(locationRange);
+
+      syncScriptPageFromEditor(editor);
+      updateScriptFormatHighlights();
+    }
+
+    function insertScriptStyledLine(type) {
+      if (type === 'scene') {
+        insertSceneHeadingTemplate();
+        return;
+      }
+
+      const editor = getActiveScriptEditor();
+      if (!editor) return;
+
+      editor.focus();
+      const selection = window.getSelection();
+      if (!selection) return;
+
+      let range;
+      if (selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
+        range = selection.getRangeAt(0);
+      } else {
+        range = document.createRange();
+        range.selectNodeContents(editor);
+        range.collapse(false);
+      }
+
+      range.deleteContents();
+
+      const line = document.createElement('div');
+      line.className = `script-line script-line-${type}`;
+      line.textContent = scriptInsertMap[type] || '';
+
+      const spacer = document.createElement('div');
+      spacer.className = 'script-line';
+      spacer.innerHTML = '<br>';
+
+      range.insertNode(spacer);
+      range.insertNode(line);
+
+      const lineRange = document.createRange();
+      lineRange.selectNodeContents(line);
+      selection.removeAllRanges();
+      selection.addRange(lineRange);
+
+      syncScriptPageFromEditor(editor);
+      updateScriptFormatHighlights();
+    }
+
+    function updateScriptFormatHighlights() {
+      const editor = getActiveScriptEditor();
+      const boldBtn = document.getElementById('scriptBoldBtn');
+      const italicBtn = document.getElementById('scriptItalicBtn');
+      const underlineBtn = document.getElementById('scriptUnderlineBtn');
+
+      const clear = () => {
+        boldBtn?.classList.remove('is-active');
+        italicBtn?.classList.remove('is-active');
+        underlineBtn?.classList.remove('is-active');
+      };
+
+      if (!editor) {
+        clear();
+        return;
+      }
+
+      const selection = window.getSelection();
+      if (!selection || !selection.anchorNode || !editor.contains(selection.anchorNode)) {
+        clear();
+        return;
+      }
+
+      try {
+        boldBtn?.classList.toggle('is-active', !!document.queryCommandState('bold'));
+        italicBtn?.classList.toggle('is-active', !!document.queryCommandState('italic'));
+        underlineBtn?.classList.toggle('is-active', !!document.queryCommandState('underline'));
+      } catch (e) {
+        clear();
+      }
+    }
+
+    loadScriptDocuments();
+    loadScriptCharacters();
+    renderScriptDocumentList();
+    renderScriptPages();
+    renderScriptCharacters();
+
+    document.querySelectorAll('[data-script-tag]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        insertScriptStyledLine(btn.dataset.scriptTag);
+      });
+      btn.setAttribute('aria-label', `Insert ${btn.dataset.scriptTag} block`);
+    });
+
+    document.getElementById('scriptBoldBtn')?.addEventListener('click', () => applyInlineCommand('bold'));
+    document.getElementById('scriptItalicBtn')?.addEventListener('click', () => applyInlineCommand('italic'));
+    document.getElementById('scriptUnderlineBtn')?.addEventListener('click', () => applyInlineCommand('underline'));
+    document.getElementById('scriptFontSizeSelect')?.addEventListener('change', (e) => {
+      const size = e.target.value;
+      if (!size) return;
+      applyScriptFontSize(size);
+      e.target.value = '';
+    });
+
+    document.addEventListener('selectionchange', () => {
+      updateScriptFormatHighlights();
+    });
+
+    document.getElementById('scriptCharacterAddBtn')?.addEventListener('click', () => {
+      const input = document.getElementById('scriptCharacterNameInput');
+      const name = String(input?.value || '').trim();
+      if (!name) return;
+      if (!SCRIPT_CHARACTERS.includes(name)) {
+        SCRIPT_CHARACTERS.push(name);
+        saveScriptCharacters();
+        renderScriptCharacters();
+      }
+      if (input) input.value = '';
+    });
+
+    document.getElementById('scriptCreateDocBtn')?.addEventListener('click', addScriptDocument);
+    document.getElementById('scriptDeleteDocBtn')?.addEventListener('click', deleteActiveScriptDocument);
+    document.getElementById('scriptAddPageBtn')?.addEventListener('click', addScriptPage);
+    document.getElementById('scriptRailNewBtn')?.addEventListener('click', addScriptDocument);
+    document.getElementById('scriptRailDeleteBtn')?.addEventListener('click', deleteActiveScriptDocument);
+    document.getElementById('scriptRailAddPageBtn')?.addEventListener('click', addScriptPage);
+    document.getElementById('scriptFullscreenBtn')?.addEventListener('click', toggleScriptFullscreen);
+    document.getElementById('scriptRailFullscreenBtn')?.addEventListener('click', toggleScriptFullscreen);
+
+    function toggleScriptFullscreen() {
+      const page = document.getElementById('scriptPage');
+      const shell = document.querySelector('.script-shell');
+      const fullscreenBtn = document.getElementById('scriptFullscreenBtn');
+      const railBtn = document.getElementById('scriptRailFullscreenBtn');
+      if (!page || !shell) return;
+      page.classList.toggle('script-fullscreen');
+      const isFullscreen = page.classList.contains('script-fullscreen');
+      if (fullscreenBtn) {
+        fullscreenBtn.textContent = isFullscreen ? 'Exit Full Screen' : 'Full Screen';
+      }
+      if (railBtn) {
+        railBtn.textContent = isFullscreen ? 'Exit Full Screen' : 'Full Screen';
+      }
+      shell.style.boxShadow = isFullscreen ? 'none' : '0 10px 34px rgba(12, 16, 20, 0.15)';
+    }
+
+    let activeBucket = null;
+    let editingId = null;
+    let captureTag = null;
+    let goalState = { target: 30, monthKey: getMonthKey() };
+
+    function escapeRegExp(value) {
+      return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    }
+
+    function slugifyBucketName(name) {
+      const base = String(name || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'bucket';
+      return base;
+    }
+
+    function normalizeBucketEmoji(value) {
+      const trimmed = String(value || '').trim();
+      if (!trimmed) return '📝';
+      return Array.from(trimmed)[0] || '📝';
+    }
+
+    function setBucketEmojiSelection(emoji) {
+      const emojiInput = document.getElementById('bucketEmojiInput');
+      const emojiTrigger = document.getElementById('bucketEmojiTrigger');
+      const selectedEmoji = normalizeBucketEmoji(emoji);
+      if (emojiInput) {
+        emojiInput.value = selectedEmoji;
+      }
+      if (emojiTrigger) {
+        emojiTrigger.textContent = selectedEmoji;
+      }
+
+      document.querySelectorAll('.bucket-emoji-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.emoji === selectedEmoji);
+      });
+    }
+
+    function bucketMetaFromStorage() {
+      try {
+        const saved = localStorage.getItem(BUCKET_META_KEY);
+        if (!saved) return null;
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          return parsed;
+        }
+      } catch (e) {
+        console.warn('Could not load bucket metadata:', e);
+      }
+      return null;
+    }
+
+    function saveBucketMeta() {
+      try {
+        localStorage.setItem(BUCKET_META_KEY, JSON.stringify(BUCKETS));
+        queueCloudSyncSave();
+      } catch (e) {
+        console.warn('Could not save bucket metadata:', e);
+      }
+    }
+
+    function renderBucketChips() {
+      const hint = document.getElementById('tagHint');
+      if (!hint) return;
+
+      hint.innerHTML = '';
+      Object.keys(BUCKETS).forEach((key) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'tag-chip';
+        button.id = `chip-${key}`;
+        button.textContent = BUCKETS[key].label.toUpperCase();
+        button.dataset.bucket = key;
+        button.addEventListener('click', () => setCaptureTag(key));
+        hint.appendChild(button);
+      });
+    }
+
+    function getMonthKey(ts = Date.now()) {
+      const d = new Date(ts);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function formatDate(ts) {
+      const d = new Date(ts);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str ?? '');
+      return div.innerHTML;
+    }
+
+    function loadShotCategories() {
+      try {
+        const saved = localStorage.getItem(SHOT_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === 'object') {
+            SHOT_CATEGORIES = parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load shot categories:', e);
+      }
+
+      if (!SHOT_CATEGORIES || typeof SHOT_CATEGORIES !== 'object' || Array.isArray(SHOT_CATEGORIES)) {
+        SHOT_CATEGORIES = {};
+      }
+
+      const firstCategory = Object.keys(SHOT_CATEGORIES)[0] || DEFAULT_SHOT_CATEGORY;
+      if (!SHOT_CATEGORIES[firstCategory]) {
+        SHOT_CATEGORIES[firstCategory] = [];
+      }
+    }
+
+    function saveShotCategories() {
+      localStorage.setItem(SHOT_KEY, JSON.stringify(SHOT_CATEGORIES));
+      if (shotStatus) {
+        shotStatus.textContent = 'Saved locally';
+      }
+      queueCloudSyncSave();
+    }
+
+    function renderShotBoard() {
+      const board = document.getElementById('shotBoard');
+      if (!board) return;
+
+      if (Object.keys(SHOT_CATEGORIES).length === 0) {
+        board.innerHTML = '<div class="shot-empty">Create a category to start planning shots.</div>';
+        return;
+      }
+
+      board.innerHTML = '';
+      Object.entries(SHOT_CATEGORIES).forEach(([category, shots]) => {
+        const card = document.createElement('div');
+        card.className = 'shot-category-card';
+
+        const preview = Array.isArray(shots) && shots.length > 0
+          ? shots.slice(0, 3).map((shot) => `<span class="shot-preview-pill">${escapeHtml(shot.title || 'Shot')}</span>`).join('')
+          : '<span class="shot-preview-empty">No shots yet</span>';
+
+        card.innerHTML = `
+          <div class="shot-category-header">
+            <div>
+              <div class="shot-category-label">${escapeHtml(category)}</div>
+              <div class="shot-category-count">${Array.isArray(shots) ? shots.length : 0} shot${(Array.isArray(shots) ? shots.length : 0) === 1 ? '' : 's'}</div>
+            </div>
+            <button type="button" class="shot-card-delete" data-category="${escapeHtml(category)}">Delete</button>
+          </div>
+          <div class="shot-category-preview">${preview}</div>
+          <div class="shot-category-actions">
+            <button type="button" class="shot-open-btn" data-category="${escapeHtml(category)}">Open</button>
+            <button type="button" class="shot-add-btn" data-category="${escapeHtml(category)}">+ Add Shot</button>
+          </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.shot-card-delete') || e.target.closest('.shot-open-btn') || e.target.closest('.shot-add-btn')) {
+            return;
+          }
+          openShotCategory(category);
+        });
+
+        card.querySelector('.shot-open-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openShotCategory(category);
+        });
+        card.querySelector('.shot-add-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          addShotToCategory(category);
+        });
+        card.querySelector('.shot-card-delete').addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteShotCategory(category);
+        });
+        board.appendChild(card);
+      });
+    }
+
+    function openShotCategory(category) {
+      activeShotCategory = category;
+      const overlay = document.getElementById('shotOverlay');
+      const title = document.getElementById('shotModalTitle');
+      const list = document.getElementById('shotModalList');
+      title.textContent = category;
+
+      const shots = Array.isArray(SHOT_CATEGORIES[category]) ? SHOT_CATEGORIES[category] : [];
+      if (shots.length === 0) {
+        list.innerHTML = '<div class="shot-empty">No shots yet — add one to plan the scene.</div>';
+      } else {
+        list.innerHTML = shots.map((shot, index) => `
+          <div class="shot-entry">
+            <div class="shot-entry-head">
+              <div class="shot-entry-title">SHOT ${index + 1}</div>
+              <button type="button" class="shot-entry-delete" data-shot-index="${index}">Delete</button>
+            </div>
+            <div class="shot-fields-grid">
+              <div class="shot-field">
+                <label for="shot-title-${index}">Title</label>
+                <input id="shot-title-${index}" data-shot-index="${index}" data-field="title" value="${escapeHtml(shot.title || '')}" />
+              </div>
+              <div class="shot-field">
+                <label for="shot-location-${index}">Location</label>
+                <input id="shot-location-${index}" data-shot-index="${index}" data-field="location" value="${escapeHtml(shot.location || '')}" />
+              </div>
+              <div class="shot-field">
+                <label for="shot-lighting-${index}">Lighting</label>
+                <input id="shot-lighting-${index}" data-shot-index="${index}" data-field="lighting" value="${escapeHtml(shot.lighting || '')}" />
+              </div>
+              <div class="shot-field">
+                <label for="shot-angle-${index}">Angle</label>
+                <input id="shot-angle-${index}" data-shot-index="${index}" data-field="angle" value="${escapeHtml(shot.angle || '')}" />
+              </div>
+              <div class="shot-field">
+                <label for="shot-movement-${index}">Movement</label>
+                <input id="shot-movement-${index}" data-shot-index="${index}" data-field="movement" value="${escapeHtml(shot.movement || '')}" />
+              </div>
+              <div class="shot-field">
+                <label for="shot-notes-${index}">Notes</label>
+                <textarea id="shot-notes-${index}" data-shot-index="${index}" data-field="notes">${escapeHtml(shot.notes || '')}</textarea>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        list.querySelectorAll('[data-field]').forEach((input) => {
+          input.addEventListener('input', (e) => {
+            const shotIndex = Number(e.target.dataset.shotIndex);
+            const field = e.target.dataset.field;
+            SHOT_CATEGORIES[category][shotIndex][field] = e.target.value;
+            saveShotCategories();
+            renderShotBoard();
+          });
+        });
+
+        list.querySelectorAll('.shot-entry-delete').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const shotIndex = Number(btn.dataset.shotIndex);
+            SHOT_CATEGORIES[category].splice(shotIndex, 1);
+            saveShotCategories();
+            openShotCategory(category);
+            renderShotBoard();
+          });
+        });
+      }
+
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeShotCategory() {
+      const overlay = document.getElementById('shotOverlay');
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      activeShotCategory = null;
+    }
+
+    function addShotToCategory(category) {
+      if (!SHOT_CATEGORIES[category]) {
+        SHOT_CATEGORIES[category] = [];
+      }
+
+      SHOT_CATEGORIES[category].push({
+        title: `SHOT ${SHOT_CATEGORIES[category].length + 1}`,
+        location: '',
+        lighting: '',
+        angle: '',
+        movement: '',
+        notes: '',
+      });
+
+      saveShotCategories();
+      renderShotBoard();
+      openShotCategory(category);
+    }
+
+    function deleteShotCategory(category) {
+      if (!window.confirm(`Delete the category “${category}”?`)) return;
+      delete SHOT_CATEGORIES[category];
+      saveShotCategories();
+      renderShotBoard();
+      if (activeShotCategory === category) {
+        closeShotCategory();
+      }
+    }
+
+    function loadData() {
+      const savedMeta = bucketMetaFromStorage();
+      if (savedMeta) {
+        BUCKETS = JSON.parse(JSON.stringify(savedMeta));
+      } else {
+        BUCKETS = JSON.parse(JSON.stringify(DEFAULT_BUCKETS));
+      }
+
+      data = {};
+      Object.keys(BUCKETS).forEach((key) => {
+        data[key] = [];
+      });
+
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          Object.keys(parsed).forEach((key) => {
+            if (!data[key]) {
+              data[key] = [];
+            }
+            data[key] = Array.isArray(parsed[key]) ? parsed[key] : [];
+          });
+        }
+
+        const savedGoal = localStorage.getItem(GOAL_KEY);
+        if (savedGoal) {
+          const parsedGoal = JSON.parse(savedGoal);
+          goalState = {
+            monthKey: parsedGoal.monthKey || getMonthKey(),
+            target: Number(parsedGoal.target) > 0 ? Number(parsedGoal.target) : 30,
+          };
+        }
+      } catch (e) {
+        console.warn('Could not load saved data:', e);
+        data = { main: [], gaming: [], film: [] };
+      }
+
+      if (goalState.monthKey !== getMonthKey()) {
+        goalState.monthKey = getMonthKey();
+      }
+
+      loadShotCategories();
+      loadBoardTitle();
+      renderBucketChips();
+      renderBoard();
+      renderFeed();
+      renderPinned();
+      renderShotBoard();
+    }
+
+    function saveGoal() {
+      try {
+        localStorage.setItem(GOAL_KEY, JSON.stringify(goalState));
+        queueCloudSyncSave();
+      } catch (e) {
+        console.warn('Could not save goal:', e);
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        queueCloudSyncSave();
+      } catch (e) {
+        console.warn('Could not save data:', e);
+      }
+    }
+
+    function scheduleBoardFocusRefresh() {
+      if (typeof window.__boardFocusRaf === 'number') {
+        cancelAnimationFrame(window.__boardFocusRaf);
+      }
+      window.__boardFocusRaf = requestAnimationFrame(() => {
+        window.__boardFocusRaf = null;
+        refreshBoardFocusState();
+      });
+    }
+
+    function refreshBoardFocusState() {
+      const boardEl = document.getElementById('board');
+      if (!boardEl) return;
+
+      if (isSafariBucketFallback() || isMacBucketMode()) {
+        boardEl.classList.remove('is-overflowing');
+        boardEl.classList.remove('focus-mode');
+        boardEl.querySelectorAll('.bucket-card').forEach((card) => card.classList.remove('is-focus'));
+        return;
+      }
+
+      const cards = Array.from(boardEl.querySelectorAll('.bucket-card'));
+      const hasOverflow = boardEl.scrollWidth > boardEl.clientWidth + 8;
+      const allowFocusMode = hasOverflow && window.innerWidth > 800 && cards.length > 3;
+
+      boardEl.classList.toggle('is-overflowing', hasOverflow && window.innerWidth > 800);
+      boardEl.classList.toggle('focus-mode', allowFocusMode);
+
+      if (!allowFocusMode) {
+        cards.forEach((card) => card.classList.remove('is-focus'));
+        return;
+      }
+
+      const boardRect = boardEl.getBoundingClientRect();
+      const centerX = boardRect.left + boardRect.width / 2;
+      let nearestCard = null;
+      let nearestDistance = Infinity;
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(cardCenter - centerX);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestCard = card;
+        }
+      });
+
+      cards.forEach((card) => card.classList.toggle('is-focus', card === nearestCard));
+    }
+
+    function renderBoard() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      let total = 0;
+
+      Object.keys(BUCKETS).forEach((key, idx) => {
+        const b = BUCKETS[key];
+        const ideas = data[key] || [];
+        total += ideas.length;
+
+        const card = document.createElement('div');
+        card.className = 'bucket-card';
+        card.style.setProperty('--bucket-idx', String(idx));
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', 'Open ' + b.label + ' bucket');
+
+        const previewItems = ideas.slice(0, 4)
+          .map((i) => `<div class="preview-item">${escapeHtml(i.text)}</div>`)
+          .join('');
+
+        const preview = ideas.length === 0
+          ? '<div class="preview-empty">No ideas yet — click to add one.</div>'
+          : previewItems + (ideas.length > 4 ? `<div class="preview-more">+${ideas.length - 4} more</div>` : '');
+
+        const emoji = b.emoji || (key === 'main' ? '💭' : key === 'gaming' ? '🎮' : key === 'film' ? '🎬' : '📝');
+
+        card.innerHTML = `
+          <div class="stripe" style="background: repeating-linear-gradient(-45deg, ${b.color}, ${b.color} 10px, #17171b 10px, #17171b 20px);"></div>
+          <div class="bucket-body">
+            <div class="bucket-head">
+              <div class="bucket-title"><span>${emoji}</span>${b.label}</div>
+              <div class="bucket-count">${ideas.length} idea${ideas.length === 1 ? '' : 's'}</div>
+            </div>
+            <div class="bucket-preview">${preview}</div>
+            <div class="open-hint">Click to open →</div>
+            ${DEFAULT_BUCKET_KEYS.has(key) ? '' : '<button type="button" class="bucket-delete" data-bucket="' + key + '">Delete</button>'}
+          </div>
+        `;
+
+        const deleteButton = card.querySelector('.bucket-delete');
+        if (deleteButton) {
+          deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteBucket(key);
+          });
+        }
+
+        card.addEventListener('click', () => openBucket(key));
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openBucket(key);
+          }
+        });
+
+        board.appendChild(card);
+      });
+
+      document.getElementById('bottomSummaryCount').textContent = total;
+      scheduleBoardFocusRefresh();
+    }
+
+    function renderFeed() {
+      const feed = document.getElementById('captureFeed');
+      const all = Object.keys(BUCKETS)
+        .flatMap((key) => data[key].map((idea) => ({ ...idea, bucket: key })))
+        .sort((a, b) => a.createdAt - b.createdAt);
+
+      if (all.length === 0) {
+        feed.innerHTML = '<div class="feed-empty">No ideas yet — write one below and it\'ll show up here.</div>';
+        return;
+      }
+
+      feed.innerHTML = all.map((idea) => `
+        <div class="feed-msg">
+          <span class="feed-badge ${idea.bucket}">${tagLabel(idea.bucket)}</span>${escapeHtml(idea.text)}<span class="feed-time">${formatDate(idea.createdAt)}</span>
+        </div>
+      `).join('');
+
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function renderPinned() {
+      const list = document.getElementById('pinnedList');
+      const all = Object.keys(BUCKETS)
+        .flatMap((key) => data[key].filter((idea) => idea.pinned).map((idea) => ({ ...idea, bucket: key })))
+        .sort((a, b) => b.createdAt - a.createdAt);
+
+      if (all.length === 0) {
+        list.innerHTML = '<div class="pinned-empty">Nothing pinned yet — pin an idea to line up what to work on next.</div>';
+      } else {
+        list.innerHTML = all.map((idea) => `
+          <div class="pinned-item" data-id="${idea.id}" data-bucket="${idea.bucket}">
+            <div class="pinned-item-top">
+              <div>
+                <span class="feed-badge ${idea.bucket}">${tagLabel(idea.bucket)}</span>
+                <span class="pinned-item-text">${escapeHtml(idea.text)}</span>
+              </div>
+              <button class="pinned-unpin" aria-label="Unpin idea" data-id="${idea.id}" data-bucket="${idea.bucket}">&times;</button>
+            </div>
+            ${idea.description ? `<div class="pinned-item-desc">${escapeHtml(idea.description)}</div>` : ''}
+          </div>
+        `).join('');
+
+        list.querySelectorAll('.pinned-item').forEach((el) => {
+          el.addEventListener('click', (e) => {
+            if (e.target.closest('.pinned-unpin')) return;
+            openBucket(el.dataset.bucket);
+          });
+        });
+
+        list.querySelectorAll('.pinned-unpin').forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePin(btn.dataset.bucket, btn.dataset.id);
+          });
+        });
+      }
+
+      renderGoalTracker();
+    }
+
+    function renderGoalTracker() {
+      const targetInput = document.getElementById('goalTarget');
+      const goalStatus = document.getElementById('goalStatus');
+      const goalBar = document.getElementById('goalBar');
+      const goalNote = document.getElementById('goalNote');
+      const headerGoalLabel = document.getElementById('headerGoalLabel');
+      const headerGoalBar = document.getElementById('headerGoalBar');
+      const headerGoalText = document.getElementById('headerGoalText');
+      const monthKey = getMonthKey();
+      const current = Object.keys(BUCKETS).reduce((sum, key) => {
+        return sum + data[key].filter((idea) => getMonthKey(idea.createdAt) === monthKey).length;
+      }, 0);
+      const target = Number(goalState.target) > 0 ? Number(goalState.target) : 30;
+      const percent = target > 0 ? Math.min((current / target) * 100, 100) : 0;
+
+      goalState.target = target;
+      goalState.monthKey = monthKey;
+      targetInput.value = target;
+      goalStatus.textContent = `${current} / ${target}`;
+      goalBar.style.width = `${percent}%`;
+      headerGoalLabel.textContent = `${current} / ${target}`;
+      headerGoalBar.style.width = `${percent}%`;
+
+      const remaining = Math.max(target - current, 0);
+      goalNote.textContent = remaining > 0
+        ? `${remaining} more idea${remaining === 1 ? '' : 's'} to hit this month’s goal.`
+        : 'Goal reached for this month — nice work.';
+      headerGoalText.textContent = remaining > 0
+        ? `${remaining} more idea${remaining === 1 ? '' : 's'} to hit this month.`
+        : 'Goal reached for this month.';
+
+      saveGoal();
+    }
+
+    function tagLabel(bucket) {
+      return BUCKETS[bucket]?.label.toUpperCase() || bucket.toUpperCase();
+    }
+
+    function openBucket(key) {
+      activeBucket = key;
+      editingId = null;
+      const b = BUCKETS[key];
+      document.getElementById('modalTitle').textContent = b.label;
+      document.getElementById('modalStripe').style.background = `repeating-linear-gradient(-45deg, ${b.color}, ${b.color} 10px, #17171b 10px, #17171b 20px)`;
+      document.getElementById('modalAddBtn').style.background = b.color;
+      document.getElementById('overlay').classList.add('open');
+      document.getElementById('modalInput').value = '';
+      document.getElementById('modalDescInput').value = '';
+      collapseDescToggle();
+      document.getElementById('modalPinToggle').setAttribute('aria-pressed', 'false');
+      renderModalList();
+      setTimeout(() => document.getElementById('modalInput').focus(), 50);
+    }
+
+    function closeBucket() {
+      document.getElementById('overlay').classList.remove('open');
+      activeBucket = null;
+      editingId = null;
+    }
+
+    function collapseDescToggle() {
+      const toggle = document.getElementById('modalDescToggle');
+      const collapse = document.getElementById('modalDescCollapse');
+      toggle.setAttribute('aria-expanded', 'false');
+      collapse.hidden = true;
+    }
+
+    function renderModalList() {
+      const list = document.getElementById('modalList');
+      const ideas = data[activeBucket] || [];
+
+      if (ideas.length === 0) {
+        list.innerHTML = '<div class="modal-empty">Nothing here yet — add your first idea above.</div>';
+        return;
+      }
+
+      list.innerHTML = [...ideas].reverse().map((idea) => {
+        if (idea.id === editingId) {
+          const hasDesc = !!(idea.description && idea.description.trim());
+          return `
+            <div class="idea-row idea-row-editing" data-id="${idea.id}">
+              <div style="flex:1;">
+                <input type="text" class="edit-text-input" value="${escapeHtml(idea.text)}" />
+                <button type="button" class="desc-toggle edit-desc-toggle" aria-expanded="${hasDesc}">
+                  <span class="chevron">▾</span> ${hasDesc ? 'Description' : 'Add description'}
+                </button>
+                <div class="desc-collapse" ${hasDesc ? '' : 'hidden'}>
+                  <textarea class="edit-desc-input" placeholder="Notes, angle, what to include… (optional)">${escapeHtml(idea.description || '')}</textarea>
+                </div>
+                <div class="edit-actions">
+                  <button class="edit-save" data-id="${idea.id}">Save</button>
+                  <button class="edit-cancel" data-id="${idea.id}">Cancel</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="idea-row" data-id="${idea.id}">
+            <div style="flex:1;">
+              <div class="idea-text">${escapeHtml(idea.text)}</div>
+              ${idea.description ? `<div class="idea-description">${escapeHtml(idea.description)}</div>` : ''}
+              <div class="idea-date">${formatDate(idea.createdAt)}</div>
+            </div>
+            <div class="idea-actions">
+              <button class="idea-pin ${idea.pinned ? 'pinned' : ''}" aria-label="${idea.pinned ? 'Unpin idea' : 'Pin idea'}" data-id="${idea.id}">📌</button>
+              <button class="idea-edit" aria-label="Edit idea" data-id="${idea.id}">✎</button>
+              <button class="idea-del" aria-label="Delete idea" data-id="${idea.id}">&times;</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      list.querySelectorAll('.idea-del').forEach((btn) => {
+        btn.addEventListener('click', () => deleteIdea(activeBucket, btn.dataset.id));
+      });
+
+      list.querySelectorAll('.idea-pin').forEach((btn) => {
+        btn.addEventListener('click', () => togglePin(activeBucket, btn.dataset.id));
+      });
+
+      list.querySelectorAll('.idea-edit').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          editingId = btn.dataset.id;
+          renderModalList();
+        });
+      });
+
+      list.querySelectorAll('.edit-cancel').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          editingId = null;
+          renderModalList();
+        });
+      });
+
+      list.querySelectorAll('.edit-desc-toggle').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const collapse = btn.nextElementSibling;
+          const isOpen = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!isOpen));
+          collapse.hidden = isOpen;
+          if (!isOpen) collapse.querySelector('.edit-desc-input').focus();
+        });
+      });
+
+      list.querySelectorAll('.edit-save').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('.idea-row');
+          const newText = row.querySelector('.edit-text-input').value;
+          const newDesc = row.querySelector('.edit-desc-input').value;
+          editIdea(activeBucket, btn.dataset.id, newText, newDesc);
+        });
+      });
+    }
+
+    function editIdea(key, id, text, description = '') {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+
+      const idea = data[key].find((i) => i.id === id);
+      if (!idea) return;
+
+      idea.text = trimmed;
+      idea.description = description.trim();
+      editingId = null;
+
+      renderBoard();
+      renderFeed();
+      renderPinned();
+      renderModalList();
+      saveData();
+    }
+
+    function togglePin(key, id) {
+      const idea = data[key].find((i) => i.id === id);
+      if (!idea) return;
+
+      idea.pinned = !idea.pinned;
+      renderBoard();
+      renderPinned();
+      if (activeBucket === key) renderModalList();
+      saveData();
+    }
+
+    function addIdea(key, text, description = '', pinned = false) {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+
+      data[key].push({
+        id: uid(),
+        text: trimmed,
+        description: description.trim(),
+        pinned: !!pinned,
+        createdAt: Date.now(),
+      });
+
+      renderBoard();
+      renderFeed();
+      renderPinned();
+      if (activeBucket === key) renderModalList();
+      saveData();
+    }
+
+    function deleteIdea(key, id) {
+      data[key] = data[key].filter((i) => i.id !== id);
+      renderBoard();
+      renderFeed();
+      renderPinned();
+      if (activeBucket === key) renderModalList();
+      saveData();
+    }
+
+    function deleteBucket(key) {
+      if (DEFAULT_BUCKET_KEYS.has(key)) return;
+      if (!window.confirm(`Delete the bucket “${BUCKETS[key]?.label || key}”?`)) return;
+
+      delete BUCKETS[key];
+      delete data[key];
+
+      if (activeBucket === key) {
+        closeBucket();
+      }
+
+      saveBucketMeta();
+      saveData();
+      renderBucketChips();
+      renderBoard();
+      renderFeed();
+      renderPinned();
+      updateCaptureState();
+    }
+
+    document.getElementById('modalAddBtn').addEventListener('click', () => {
+      const input = document.getElementById('modalInput');
+      const descInput = document.getElementById('modalDescInput');
+      const pinToggle = document.getElementById('modalPinToggle');
+
+      addIdea(activeBucket, input.value, descInput.value, pinToggle.getAttribute('aria-pressed') === 'true');
+      input.value = '';
+      descInput.value = '';
+      pinToggle.setAttribute('aria-pressed', 'false');
+      collapseDescToggle();
+      input.focus();
+    });
+
+    document.getElementById('modalInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('modalAddBtn').click();
+      }
+    });
+
+    document.getElementById('modalDescToggle').addEventListener('click', () => {
+      const toggle = document.getElementById('modalDescToggle');
+      const collapse = document.getElementById('modalDescCollapse');
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      collapse.hidden = isOpen;
+      if (!isOpen) document.getElementById('modalDescInput').focus();
+    });
+
+    document.getElementById('modalPinToggle').addEventListener('click', () => {
+      const pinToggle = document.getElementById('modalPinToggle');
+      const current = pinToggle.getAttribute('aria-pressed') === 'true';
+      pinToggle.setAttribute('aria-pressed', String(!current));
+    });
+
+    document.getElementById('modalClose').addEventListener('click', closeBucket);
+    document.getElementById('overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'overlay') closeBucket();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeBucket();
+    });
+
+    function detectTag(text) {
+      for (const key of Object.keys(BUCKETS)) {
+        const label = BUCKETS[key].label;
+        const pattern = new RegExp(`\\*\\s*${escapeRegExp(label)}\\s*\\*`, 'i');
+        if (pattern.test(text)) return key;
+      }
+      return null;
+    }
+
+    function setCaptureTag(tag) {
+      captureTag = tag;
+      const input = document.getElementById('captureInput');
+      const current = input.value.trim();
+      const normalized = current.replace(/\*\s*[^*]+\s*\*/g, '').trim();
+      input.value = `${normalized} ${tag ? `*${BUCKETS[tag].label}*` : ''}`.trim();
+      updateCaptureState();
+      input.focus();
+    }
+
+    function updateCaptureState() {
+      const input = document.getElementById('captureInput');
+      const text = input.value;
+      const tag = detectTag(text) || captureTag;
+      const captureBtn = document.getElementById('captureBtn');
+      const captureMsg = document.getElementById('captureMsg');
+      const chips = document.querySelectorAll('#tagHint .tag-chip');
+
+      chips.forEach((chip) => {
+        chip.classList.toggle('lit', chip.dataset.bucket === tag);
+      });
+
+      const hasText = text.trim().length > 0;
+      captureBtn.disabled = !hasText;
+      captureMsg.classList.remove('error');
+
+      if (!hasText) {
+        captureMsg.textContent = 'Tag it and hit Add — no tag needed if you\'re adding from inside an open bucket.';
+      } else if (tag) {
+        captureMsg.textContent = `Will go to ${BUCKETS[tag].label}.`;
+      } else {
+        captureMsg.textContent = 'Use the bucket chips to route this idea.';
+      }
+
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    }
+
+    function submitCapture() {
+      const input = document.getElementById('captureInput');
+      const captureMsg = document.getElementById('captureMsg');
+      const text = input.value;
+      const tag = detectTag(text);
+
+      if (!tag) {
+        captureMsg.textContent = 'Choose a bucket tag from the chips so I know where this goes.';
+        captureMsg.classList.add('error');
+        input.focus();
+        return;
+      }
+
+      const cleaned = text.replace(new RegExp(`\\*\\s*${escapeRegExp(BUCKETS[tag].label)}\\s*\\*`, 'ig'), '').replace(/\s{2,}/g, ' ').trim();
+      addIdea(tag, cleaned);
+      input.value = '';
+      captureTag = null;
+      input.style.height = 'auto';
+      updateCaptureState();
+      input.focus();
+    }
+
+    document.getElementById('captureInput').addEventListener('input', updateCaptureState);
+    document.getElementById('captureInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!document.getElementById('captureBtn').disabled) submitCapture();
+      }
+    });
+    const feedPanel = document.getElementById('feedPanel');
+    const pinnedPanel = document.getElementById('pinnedPanel');
+    const board = document.getElementById('board');
+    const menuToggle = document.getElementById('mobileMenuToggle');
+    const menuSheet = document.getElementById('mobileMenuSheet');
+
+    function setMobileView(section) {
+      const mobile = window.innerWidth <= 900;
+      if (!mobile) return;
+
+      const menuButtons = menuSheet.querySelectorAll('button[data-section]');
+      menuButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.section === section));
+
+      feedPanel.style.display = section === 'feed' ? 'flex' : 'none';
+      pinnedPanel.style.display = section === 'pinned' ? 'flex' : 'none';
+      board.style.display = section === 'buckets' ? '' : 'none';
+    }
+
+    menuToggle.addEventListener('click', () => {
+      menuSheet.classList.toggle('open');
+    });
+
+    menuSheet.querySelectorAll('button[data-section]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const section = btn.dataset.section;
+        setMobileView(section);
+        menuSheet.classList.remove('open');
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) {
+        feedPanel.style.display = '';
+        pinnedPanel.style.display = '';
+        board.style.display = '';
+        menuSheet.classList.remove('open');
+      } else {
+        setMobileView('buckets');
+      }
+    });
+
+    if (window.innerWidth <= 900) {
+      setMobileView('buckets');
+    }
+
+    document.getElementById('captureBtn').addEventListener('click', submitCapture);
+
+    const boardTitleModal = document.getElementById('boardTitleModal');
+    const boardTitleModalInput = document.getElementById('boardTitleModalInput');
+
+    function closeBoardTitleModal() {
+      if (!boardTitleModal) return;
+      boardTitleModal.classList.remove('open');
+      boardTitleModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('board-title-modal-open');
+    }
+
+    function openBoardTitleModal() {
+      if (!boardTitleModal || !boardTitleModalInput) return;
+      const current = document.getElementById('boardTitleText')?.textContent || 'Creative\'s Mind';
+      boardTitleModalInput.value = current;
+      boardTitleModal.classList.add('open');
+      boardTitleModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('board-title-modal-open');
+      requestAnimationFrame(() => {
+        boardTitleModalInput.focus();
+        boardTitleModalInput.select();
+      });
+    }
+
+    function saveBoardTitleFromModal() {
+      const clean = String(boardTitleModalInput?.value || '').trim() || 'Creative\'s Mind';
+      setBoardTitle(clean);
+      saveBoardTitle(clean);
+      closeBoardTitleModal();
+    }
+
+    document.getElementById('boardTitleEditBtn')?.addEventListener('click', openBoardTitleModal);
+    document.getElementById('boardTitleModalCancel')?.addEventListener('click', closeBoardTitleModal);
+    document.getElementById('boardTitleModalSave')?.addEventListener('click', saveBoardTitleFromModal);
+    boardTitleModal?.addEventListener('click', (e) => {
+      if (e.target === boardTitleModal) closeBoardTitleModal();
+    });
+    boardTitleModalInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveBoardTitleFromModal();
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeBoardTitleModal();
+      }
+    });
+
+    document.querySelectorAll('.bucket-emoji-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setBucketEmojiSelection(btn.dataset.emoji);
+      });
+    });
+
+    setBucketEmojiSelection('📝');
+
+    document.getElementById('bucketAddBtn').addEventListener('click', () => {
+      const input = document.getElementById('bucketNameInput');
+      const emojiInput = document.getElementById('bucketEmojiInput');
+      const name = String(input.value || '').trim();
+      if (!name) return;
+
+      const baseId = slugifyBucketName(name);
+      let id = baseId;
+      let suffix = 2;
+      while (BUCKETS[id]) {
+        id = `${baseId}-${suffix}`;
+        suffix += 1;
+      }
+
+      const color = CUSTOM_BUCKET_COLORS[Object.keys(BUCKETS).length % CUSTOM_BUCKET_COLORS.length];
+      BUCKETS[id] = {
+        label: name,
+        color,
+        cssClass: id,
+        emoji: normalizeBucketEmoji(emojiInput?.value),
+      };
+      data[id] = [];
+      saveBucketMeta();
+      saveData();
+      renderBucketChips();
+      renderBoard();
+      renderFeed();
+      renderPinned();
+      input.value = '';
+      if (emojiInput) emojiInput.value = '';
+      setBucketEmojiSelection('📝');
+
+      requestAnimationFrame(() => {
+        const smoothBehavior = (isSafariBucketFallback() || isMacBucketMode()) ? 'auto' : 'smooth';
+        board.scrollTo({ left: board.scrollWidth, behavior: smoothBehavior });
+        scheduleBoardFocusRefresh();
+      });
+    });
+
+    document.getElementById('shotCategoryAddBtn').addEventListener('click', () => {
+      const input = document.getElementById('shotCategoryNameInput');
+      const name = String(input.value || '').trim();
+      if (!name) return;
+      SHOT_CATEGORIES[name] = SHOT_CATEGORIES[name] || [];
+      input.value = '';
+      saveShotCategories();
+      renderShotBoard();
+    });
+
+    document.getElementById('shotModalAddBtn').addEventListener('click', () => {
+      if (!activeShotCategory) return;
+      addShotToCategory(activeShotCategory);
+    });
+
+    document.getElementById('shotModalClose').addEventListener('click', closeShotCategory);
+    document.getElementById('shotOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'shotOverlay') closeShotCategory();
+    });
+
+    document.getElementById('goalTarget').addEventListener('change', () => {
+      const value = Number(document.getElementById('goalTarget').value);
+      goalState.target = value > 0 ? value : 30;
+      renderGoalTracker();
+    });
+
+    board.addEventListener('wheel', (e) => {
+      if (window.innerWidth <= 800) return;
+      if (isSafariBucketFallback() || isMacBucketMode()) return;
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (Math.abs(delta) < 1) return;
+      e.preventDefault();
+      board.scrollBy({ left: delta, behavior: 'smooth' });
+      scheduleBoardFocusRefresh();
+    }, { passive: false });
+
+    let boardDragState = null;
+    board.addEventListener('pointerdown', (e) => {
+      if (window.innerWidth <= 800) return;
+      if (isSafariBucketFallback() || isMacBucketMode()) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.target.closest('button, input, textarea, select, a, [contenteditable="true"]')) return;
+      boardDragState = {
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startScrollLeft: board.scrollLeft,
+        isDragging: false,
+      };
+    });
+
+    board.addEventListener('pointermove', (e) => {
+      if (!boardDragState || e.pointerId !== boardDragState.pointerId) return;
+      const distance = e.clientX - boardDragState.startX;
+
+      if (!boardDragState.isDragging && Math.abs(distance) < 6) {
+        return;
+      }
+
+      if (!boardDragState.isDragging) {
+        boardDragState.isDragging = true;
+        board.classList.add('is-grabbing');
+        board.setPointerCapture(e.pointerId);
+      }
+
+      e.preventDefault();
+      board.scrollLeft = boardDragState.startScrollLeft - distance;
+      scheduleBoardFocusRefresh();
+    });
+
+    const endBoardDrag = (e) => {
+      if (!boardDragState) return;
+      if (e && boardDragState.pointerId !== undefined && e.pointerId !== boardDragState.pointerId) return;
+      boardDragState = null;
+      board.classList.remove('is-grabbing');
+      scheduleBoardFocusRefresh();
+    };
+
+    board.addEventListener('pointerup', endBoardDrag);
+    board.addEventListener('pointercancel', endBoardDrag);
+    board.addEventListener('pointerleave', () => {
+      if (boardDragState) endBoardDrag();
+    });
+
+    window.addEventListener('resize', scheduleBoardFocusRefresh);
+
+    initCloudSync();
+    loadData();
+    updateCaptureState();
+  </script>
+</body>
+</html>
