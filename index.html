@@ -3593,18 +3593,18 @@
     const authDrawerToggle = document.getElementById('authDrawerToggle');
     const siteHeaderMenuToggle = document.getElementById('siteHeaderMenuToggle');
     const siteHeaderMenu = document.getElementById('siteHeaderMenu');
-    const pinnedPanel = document.getElementById('pinnedPanel');
+    const drawerPinnedPanel = document.getElementById('pinnedPanel');
     const pinnedDrawerToggle = document.getElementById('pinnedDrawerToggle');
     const pinnedPanelClose = document.getElementById('pinnedPanelClose');
 
     pinnedDrawerToggle?.addEventListener('click', () => {
-      pinnedPanel?.classList.toggle('drawer-open');
+      drawerPinnedPanel?.classList.toggle('drawer-open');
       siteHeaderMenu?.classList.remove('open');
       siteHeaderMenuToggle?.setAttribute('aria-expanded', 'false');
     });
 
     pinnedPanelClose?.addEventListener('click', () => {
-      pinnedPanel?.classList.remove('drawer-open');
+      drawerPinnedPanel?.classList.remove('drawer-open');
     });
 
     siteHeaderMenuToggle?.addEventListener('click', () => {
