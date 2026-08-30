@@ -2766,7 +2766,6 @@
   <header class="site-header">
     <div class="site-header-left">
       <button type="button" class="site-header-menu-toggle" id="siteHeaderMenuToggle" aria-expanded="false" aria-controls="siteHeaderMenu" aria-label="Open top menu">☰ Menu</button>
-      <button type="button" id="appFullscreenBtn">Full Screen</button>
     </div>
     <div class="auth-status" id="authStatusText">Local only</div>
     <div class="site-header-menu" id="siteHeaderMenu" aria-label="Main menu">
@@ -2917,7 +2916,6 @@
   <div class="app">
     <header>
       <div class="brand-mark">
-        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open menu">☰</button>
         <div class="board-title-wrap">
           <h1 id="boardTitleText">Creative's Mind</h1>
           <button type="button" class="board-title-edit" id="boardTitleEditBtn">Rename</button>
@@ -5118,7 +5116,7 @@
       board.style.display = section === 'buckets' ? '' : 'none';
     }
 
-    menuToggle.addEventListener('click', () => {
+    menuToggle?.addEventListener('click', () => {
       menuSheet.classList.toggle('open');
     });
 
